@@ -1,3 +1,14 @@
+## Iniciar o projeto com Eclipse+Mavem
+
+Crie um novo "run configuration" e execute ela.
+
+Verifique se o compilador do proejto está usando java 1.7 (properties > java compiler)
+
+Exporte o projeto para .jar (botão direito no projeto > export > runnable jar file > coloque um nome e finish). 
+
+O arquivo .jar será criado na pasta pai do projeto.
+
+
 ## Como usar a imagem Docker
 
 Instale docker seguindo [estas instruções](https://docs.docker.com/engine/installation/linux/ubuntu/).
