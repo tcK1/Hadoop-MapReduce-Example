@@ -1,0 +1,12 @@
+# Este arquivo é usado para desenvolvimento da plataforma
+# Mas também pode ser usado para reprodução local do sistema
+version: "3"
+services:
+  hadoop:
+    image: sequenceiq/hadoop-docker:2.7.1
+    # build:
+    #   context: ./
+    #   dockerfile: Dockerfile
+    command: /etc/bootstrap.sh -bash
+    volumes:
+      - .:/app
