@@ -17,3 +17,7 @@ Binário do hadoop está disponível em
 ```
 /usr/local/hadoop/bin/hadoop
 ```
+Para rodar um .jar com o hadoop, use o comando
+```
+/usr/local/hadoop/bin/hadoop jar <nome_do_arquivo>.jar 
+```
