@@ -37,4 +37,5 @@ Para rodar um .jar com o hadoop, use o comando
 ### Links
 
 [Maven no Eclipse](https://stackoverflow.com/questions/8620127/maven-in-eclipse-step-by-step-installation)
+
 [MapReduce Tutorial](https://hadoop.apache.org/docs/r2.8.0/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html).
