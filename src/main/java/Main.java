@@ -6,28 +6,60 @@ import java.util.Scanner;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.tools.ant.taskdefs.MacroDef.Text;
 
 public class Main {
-
-	// se for comodo, é possivel alterar a origem e a saida dos dados
-	private final static String INPUT_PATH = "";
-
-	private final static String OUTPUT_PATH = "";
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	// mapper
-	// public static class WeatherMapper extends Mapper<LongWritable, Text,
-	// Text, DoubleWritable> {
-	// }
-	//
-	// // reducer
-	// public static class StatisticReducer extends Reducer<Text,
-	// DoubleWritable, Text, DoubleWritable> {
-	// }
+	public static class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritable> {
+
+		@Override
+		protected void map(LongWritable key, Text value,
+				Mapper<LongWritable, Text, Text, DoubleWritable>.Context context)
+				throws IOException, InterruptedException {
+		}
+	}
+
+	// reducer
+	public static class StatisticReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
+
+		private double average(double total, int quantity) {
+			return total / quantity;
+		}
+
+		private double standardDeviation(double[] values, int quantity, double average) {
+			double aux = 0;
+			for (double d : values) {
+				aux = aux + Math.pow(d - average, 2.0);
+			}
+			return Math.sqrt(aux / quantity);
+		}
+
+		@Override
+		protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)
+				throws IOException, InterruptedException {
+
+			double total = 0.0;
+			int aux = 0;
+
+			for (DoubleWritable value : values) {
+				total = total + value.get();
+				aux++;
+			}
+			double average = average(total, aux);
+
+			context.write(key, new DoubleWritable(average));
+		}
+	}
 
 	private java.util.Date getDate(String date) {
 		try {
@@ -73,8 +105,8 @@ public class Main {
 			Job job = Job.getInstance(conf, "dataweather");
 			job.setJarByClass(Main.class);
 
-			FileInputFormat.addInputPath(job, new Path(INPUT_PATH));
-			FileOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
+			FileInputFormat.addInputPath(job, new Path(args[0]));
+			FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		} catch (IOException e) {
 			System.out.println("Não foi possível criar o job");
 			System.err.println(e);
