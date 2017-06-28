@@ -106,16 +106,6 @@ public class Main {
 		}
 	}
 
-	private java.util.Date getDate(String date) {
-		try {
-			return dateFormat.parse(date);
-		} catch (ParseException e) {
-			System.out.println("Não foi possível converter a data");
-			System.err.println(e);
-		}
-		return null;
-	}
-
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 
