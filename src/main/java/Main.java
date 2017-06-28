@@ -125,12 +125,13 @@ public class Main {
 		System.out.println("Qual informacao deseja analisar?");
 		System.out.println("Temperatura: 1"); // TEMP
 		System.out.println("Ponto de orvalho: 2"); // DEWP
-		System.out.println("Pressao nivel do mar: 3"); // SLP
+		System.out.println("Pressao no nivel do mar: 3"); // SLP
 		System.out.println("Pressao na estacao: 4"); // STP
 		System.out.println("Visibilidade: 5"); // VISIB
 		System.out.println("Velocidade do vento: 6"); // WDSP
 		System.out.println("Velocidade maxima do vento: 7"); // MXSPD
 		System.out.println("Velocidade maxima da rajada de vento: 8"); // GUST
+		System.out.println("Temperatura Maxima: 9");// MAX
 		String tipoInformacao = sc.nextLine().toUpperCase();
 
 		sc.close();
