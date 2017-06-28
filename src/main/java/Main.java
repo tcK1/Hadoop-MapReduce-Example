@@ -109,10 +109,8 @@ public class Main {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 
-		System.out.println("insisra a data de inicio no formato DD/MM/AAAA");
-		startDate = sc.nextLine();
-		System.out.println("insira a data final no formato DD/MM/AAAA");
-		endDate = sc.nextLine();
+		startDate = args[0];
+		endDate = args[1];
 
 		System.out.println("Como deseja que os dados sejam agrupados?");
 		System.out.println("Ano-Mes-Dia: T"); // Tudo
