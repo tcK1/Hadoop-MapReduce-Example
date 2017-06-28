@@ -23,89 +23,6 @@ public class Main {
 
 	static String endDate;
 
-	// mapper
-	public static class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritable> {
-
-		private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-		private boolean isValidDate(Date actual, String startDate, String endDate) throws ParseException {
-			Date start = dateFormat.parse(startDate);
-			Date end = dateFormat.parse(endDate);
-
-			if (actual.after(start) && actual.before(end)) {
-				return true;
-			}
-			return false;
-		}
-
-		@Override
-		protected void map(LongWritable key, Text value,
-				Mapper<LongWritable, Text, Text, DoubleWritable>.Context context)
-				throws IOException, InterruptedException {
-
-			String line = value.toString();
-
-			// o arquivo começa com "STN"... Ignorar primeira linha
-			if (line.startsWith("S")) {
-				return;
-			}
-
-			int year = Integer.parseInt(line.substring(14, 18));
-			int month = Integer.parseInt(line.substring(18, 20));
-			int day = Integer.parseInt(line.substring(20, 21));
-			System.out.println("data: " + day + "/" + month + "/" + year);
-
-			// verifica se a data lida é para ser analisada
-			try {
-				Calendar calendar = Calendar.getInstance();
-				calendar.clear();
-				calendar.set(year, month, day);
-				Date actual = calendar.getTime();
-				if (isValidDate(actual, startDate, endDate)) {
-					return;
-				}
-			} catch (ParseException e) {
-				System.err.println("Data no formato invalido ");
-				e.printStackTrace();
-			}
-
-			// se tudo certo ate agora, começa as contas
-
-		}
-	}
-
-	// reducer
-	public static class StatisticReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
-
-		private double average(double total, int quantity) {
-			return total / quantity;
-		}
-
-		private double standardDeviation(double[] values, int quantity, double average) {
-			double aux = 0;
-			for (double d : values) {
-				aux = aux + Math.pow(d - average, 2.0);
-			}
-			return Math.sqrt(aux / quantity);
-		}
-
-		@Override
-		protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)
-				throws IOException, InterruptedException {
-
-			double total = 0.0;
-			int aux = 0;
-
-			for (DoubleWritable value : values) {
-				total = total + value.get();
-				aux++;
-			}
-			double average = average(total, aux);
-
-			context.write(key, new DoubleWritable(average));
-		}
-	}
-
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 
@@ -141,7 +58,8 @@ public class Main {
 
 			FileInputFormat.addInputPath(job, new Path(args[0]));
 			FileOutputFormat.setOutputPath(job, new Path(args[1]));
-		} catch (IOException e) {
+		}
+		catch(IOException e) {
 			System.out.println("Não foi possível criar o job");
 			System.err.println(e);
 		}
