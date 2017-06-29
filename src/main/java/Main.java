@@ -17,12 +17,6 @@ public class Main {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 
-		System.out.println("O que deseja calcular");
-		System.out.println("Media: M");
-		System.out.println("Desvio padrão: DS");
-		System.out.println("Minimos quadrados: MMQ");
-		String calcType = sc.next().toUpperCase();
-
 		System.out.println("Como deseja que os dados sejam agrupados?");
 		System.out.println("Ano-Mes-Dia: T"); // Tudo
 		System.out.println("Ano-Mes: P"); // Parcial
@@ -46,7 +40,6 @@ public class Main {
 		sc.close();
 
 		Configuration conf = new Configuration();
-		conf.set("calcType", calcType);
 		conf.set("startDate", args[0]);
 		conf.set("endDate", args[1]);
 		conf.set("selectionType", selectionType);
