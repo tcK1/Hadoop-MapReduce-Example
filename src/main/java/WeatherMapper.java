@@ -9,9 +9,14 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.tools.ant.taskdefs.MacroDef.Text;
 
+import com.sun.org.apache.commons.logging.Log;
+import com.sun.org.apache.commons.logging.LogFactory;
+
 public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritable> {
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+	Log log = LogFactory.getLog(WeatherMapper.class);
 
 	private boolean isValidDate(String actualDate, String startDate, String endDate) throws ParseException {
 		Date actual = dateFormat.parse(actualDate);
@@ -19,16 +24,20 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		Date end = dateFormat.parse(endDate);
 
 		if (actual.after(start) && actual.before(end)) {
+			log.debug("data " + actualDate + " valida");
 			return true;
 		}
+		log.debug("data " + actualDate + " INvalida");
 		return false;
 	}
 
 	@Override
 	protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, DoubleWritable>.Context context)
 			throws IOException, InterruptedException {
+		log.debug("Comecou o mapper");
 
 		String line = value.toString();
+		log.debug("lendo linha " + line);
 
 		// o arquivo começa com "STN"... Ignorar primeira linha
 		if (line.startsWith("S")) {
@@ -47,7 +56,7 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 			String startDate = conf.get("startDate");
 			String endDate = conf.get("endDate");
 
-			if (isValidDate(date, startDate, endDate)) {
+			if (!isValidDate(date, startDate, endDate)) {
 				return;
 			}
 		} catch (ParseException e) {

@@ -48,8 +48,8 @@ public class Main {
 			Job job = Job.getInstance(conf, "dataweather");
 			job.setJarByClass(Main.class);
 
-			FileInputFormat.addInputPath(job, new Path(args[0]));
-			FileOutputFormat.setOutputPath(job, new Path(args[1]));
+			FileInputFormat.addInputPath(job, new Path(args[2]));
+			FileOutputFormat.setOutputPath(job, new Path(args[3]));
 		} catch (IOException e) {
 			System.out.println("Não foi possível criar o job");
 			System.err.println(e);

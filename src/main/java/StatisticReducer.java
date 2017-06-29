@@ -7,9 +7,14 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.tools.ant.taskdefs.MacroDef.Text;
 
+import com.sun.org.apache.commons.logging.Log;
+import com.sun.org.apache.commons.logging.LogFactory;
+
 public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
 
 	private MultipleOutputs<Text, DoubleWritable> mos;
+
+	Log log = LogFactory.getLog(WeatherMapper.class);
 
 	private double average(double total, int quantity) {
 		return total / quantity;
@@ -30,6 +35,7 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 	@Override
 	protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)
 			throws IOException, InterruptedException {
+		log.debug("Comecou o reducer");
 		Configuration conf = context.getConfiguration();
 
 		double total = 0.0;
