@@ -6,8 +6,8 @@ import java.util.Date;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.tools.ant.taskdefs.MacroDef.Text;
 
 import com.sun.org.apache.commons.logging.Log;
 import com.sun.org.apache.commons.logging.LogFactory;
@@ -34,6 +34,8 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 	@Override
 	protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, DoubleWritable>.Context context)
 			throws IOException, InterruptedException {
+		// final double MISSING4 = 9999.9;
+		// final double MISSING3 = 999.9;
 		log.debug("Comecou o mapper");
 
 		String line = value.toString();
@@ -65,6 +67,7 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		}
 
 		// se tudo certo ate agora, começa as contas
-
+		double information = Double.parseDouble(line.substring(24, 30)); // temperatura
+		context.write(new Text(date), new DoubleWritable(information));
 	}
 }
