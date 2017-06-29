@@ -1,8 +1,20 @@
-public static class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritable> {
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.tools.ant.taskdefs.MacroDef.Text;
+
+public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritable> {
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-	private boolean isValidDate(Date actual, String startDate, String endDate) throws ParseException {
+	private boolean isValidDate(String actualDate, String startDate, String endDate) throws ParseException {
+		Date actual = dateFormat.parse(actualDate);
 		Date start = dateFormat.parse(startDate);
 		Date end = dateFormat.parse(endDate);
 
@@ -13,7 +25,8 @@ public static class WeatherMapper extends Mapper<LongWritable, Text, Text, Doubl
 	}
 
 	@Override
-	protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, DoubleWritable>.Context context) throws IOException, InterruptedException {
+	protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, DoubleWritable>.Context context)
+			throws IOException, InterruptedException {
 
 		String line = value.toString();
 
@@ -22,22 +35,22 @@ public static class WeatherMapper extends Mapper<LongWritable, Text, Text, Doubl
 			return;
 		}
 
-		int year = Integer.parseInt(line.substring(14, 18));
-		int month = Integer.parseInt(line.substring(18, 20));
-		int day = Integer.parseInt(line.substring(20, 21));
+		String year = line.substring(14, 18);
+		String month = line.substring(18, 20);
+		String day = line.substring(20, 21);
 		System.out.println("data: " + day + "/" + month + "/" + year);
+		String date = day + "/" + month + "/" + "/" + year;
 
 		// verifica se a data lida é para ser analisada
 		try {
-			Calendar calendar = Calendar.getInstance();
-			calendar.clear();
-			calendar.set(year, month, day);
-			Date actual = calendar.getTime();
-			if (isValidDate(actual, startDate, endDate)) {
+			Configuration conf = context.getConfiguration();
+			String startDate = conf.get("startDate");
+			String endDate = conf.get("endDate");
+
+			if (isValidDate(date, startDate, endDate)) {
 				return;
 			}
-		}
-		catch(ParseException e) {
+		} catch (ParseException e) {
 			System.err.println("Data no formato invalido ");
 			e.printStackTrace();
 		}

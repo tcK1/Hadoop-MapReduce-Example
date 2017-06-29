@@ -1,4 +1,10 @@
-public static class StatisticReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
+import java.io.IOException;
+
+import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.tools.ant.taskdefs.MacroDef.Text;
+
+public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
 
 	private double average(double total, int quantity) {
 		return total / quantity;
@@ -13,7 +19,8 @@ public static class StatisticReducer extends Reducer<Text, DoubleWritable, Text,
 	}
 
 	@Override
-	protected void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
+	protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)
+			throws IOException, InterruptedException {
 
 		double total = 0.0;
 		int aux = 0;
