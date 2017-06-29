@@ -1,5 +1,6 @@
 import java.io.IOException;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.tools.ant.taskdefs.MacroDef.Text;
@@ -18,9 +19,15 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 		return Math.sqrt(aux / quantity);
 	}
 
+	private double leastSquares() {
+		return 0D;
+	}
+
 	@Override
 	protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)
 			throws IOException, InterruptedException {
+		Configuration conf = context.getConfiguration();
+		String calcType = conf.get("calcType");
 
 		double total = 0.0;
 		int aux = 0;
@@ -30,6 +37,17 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 			aux++;
 		}
 		double average = average(total, aux);
+
+		if (calcType.equals("M")) {
+			context.write(key, new DoubleWritable(average));
+		} else if (calcType.equals("DS")) {
+
+		} else if (calcType.equals("MMQ")) {
+
+		} else {
+			// lança excecao
+			new RuntimeException("Calculo " + calcType + " inválido. Deve ser M, DS ou MMQ");
+		}
 
 		context.write(key, new DoubleWritable(average));
 	}

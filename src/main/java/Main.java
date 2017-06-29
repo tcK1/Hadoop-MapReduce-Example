@@ -17,13 +17,19 @@ public class Main {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 
+		System.out.println("O que deseja calcular");
+		System.out.println("Media: M");
+		System.out.println("Desvio padrão: DS");
+		System.out.println("Minimos quadrados: MMQ");
+		String calcType = sc.next().toUpperCase();
+
 		System.out.println("Como deseja que os dados sejam agrupados?");
 		System.out.println("Ano-Mes-Dia: T"); // Tudo
 		System.out.println("Ano-Mes: P"); // Parcial
 		System.out.println("Ano: A"); // Ano
 		System.out.println("Mes: M"); // Mes
 		System.out.println("Dia: D"); // Dia
-		String tipoSelecao = sc.nextLine().toUpperCase();
+		String selectionType = sc.nextLine().toUpperCase();
 
 		System.out.println("Qual informacao deseja analisar?");
 		System.out.println("Temperatura: 1"); // TEMP
@@ -35,13 +41,16 @@ public class Main {
 		System.out.println("Velocidade maxima do vento: 7"); // MXSPD
 		System.out.println("Velocidade maxima da rajada de vento: 8"); // GUST
 		System.out.println("Temperatura Maxima: 9");// MAX
-		String tipoInformacao = sc.nextLine().toUpperCase();
+		String informationType = sc.nextLine().toUpperCase();
 
 		sc.close();
 
 		Configuration conf = new Configuration();
+		conf.set("calcType", calcType);
 		conf.set("startDate", args[0]);
 		conf.set("endDate", args[1]);
+		conf.set("selectionType", selectionType);
+		conf.set("informationType", informationType);
 		try {
 			Job job = Job.getInstance(conf, "dataweather");
 			job.setJarByClass(Main.class);
