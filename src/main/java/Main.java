@@ -50,9 +50,23 @@ public class Main {
 
 			FileInputFormat.addInputPath(job, new Path(args[2]));
 			FileOutputFormat.setOutputPath(job, new Path(args[3]));
+
+			if (job.waitForCompletion(true)) {
+
+				System.exit(0);
+			} else {
+
+				System.exit(1);
+			}
 		} catch (IOException e) {
 			System.out.println("Não foi possível criar o job");
 			System.err.println(e);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
