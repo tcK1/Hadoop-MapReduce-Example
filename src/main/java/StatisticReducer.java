@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.DoubleWritable;
@@ -19,7 +20,7 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 		return Math.sqrt(aux / quantity);
 	}
 
-	private double leastSquares() {
+	private double leastSquares(List<Double> x, List<Double> y) {
 		return 0D;
 	}
 
@@ -46,7 +47,7 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 
 		} else {
 			// lança excecao
-			new RuntimeException("Calculo " + calcType + " inválido. Deve ser M, DS ou MMQ");
+			new IllegalArgumentException("Calculo " + calcType + " inválido. Deve ser M, DS ou MMQ");
 		}
 
 		context.write(key, new DoubleWritable(average));
