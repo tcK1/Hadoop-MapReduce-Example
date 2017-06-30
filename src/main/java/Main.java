@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -67,6 +68,11 @@ public class Main {
 
 			FileInputFormat.addInputPath(job, new Path(args[2]));
 			FileOutputFormat.setOutputPath(job, new Path(args[3]));
+
+            System.out.println("Deletando a pasta output se ela ja existir");
+            // Delete output if exists
+            FileSystem hdfs = FileSystem.get(conf);
+            if (hdfs.exists(new Path(args[3]))) hdfs.delete(new Path(args[3]), true);
 
 			System.out.println("Input/Output foi");
 
