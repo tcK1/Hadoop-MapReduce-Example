@@ -22,23 +22,24 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 
 		System.out.println("Como deseja que os dados sejam agrupados?");
-		System.out.println("Ano-Mes-Dia: T"); // Tudo
-		System.out.println("Ano-Mes: P"); // Parcial
-		System.out.println("Ano: A"); // Ano
-		System.out.println("Mes: M"); // Mes
-		System.out.println("Dia: D"); // Dia
+
+		System.out.println("D		-> Dia"); // Dia
+		System.out.println("DS	-> Dia da Semana"); // Seg, Ter...
+		System.out.println("M		-> Mes"); // Mes
+		System.out.println("A		-> Ano"); // Ano
 		String selectionType = sc.nextLine().toUpperCase();
 
 		System.out.println("Qual informacao deseja analisar?");
-		System.out.println("Temperatura: 1"); // TEMP
-		System.out.println("Ponto de orvalho: 2"); // DEWP
-		System.out.println("Pressao no nivel do mar: 3"); // SLP
-		System.out.println("Pressao na estacao: 4"); // STP
-		System.out.println("Visibilidade: 5"); // VISIB
-		System.out.println("Velocidade do vento: 6"); // WDSP
-		System.out.println("Velocidade maxima do vento: 7"); // MXSPD
-		System.out.println("Velocidade maxima da rajada de vento: 8"); // GUST
-		System.out.println("Temperatura Maxima: 9");// MAX
+
+		System.out.println("1 -> Temperatura"); // TEMP
+		System.out.println("2 -> Ponto de orvalho"); // DEWP
+		System.out.println("3 -> Pressao no nivel do mar"); // SLP
+		System.out.println("4 -> Pressao na estacao"); // STP
+		System.out.println("5 -> Visibilidade"); // VISIB
+		System.out.println("6 -> Velocidade do vento"); // WDSP
+		System.out.println("7 -> Velocidade maxima do vento"); // MXSPD
+		System.out.println("8 -> Velocidade maxima da rajada de vento"); // GUST
+		System.out.println("9 -> Temperatura Maxima");// MAX
 		String informationType = sc.nextLine().toUpperCase();
 
 		sc.close();
@@ -48,6 +49,7 @@ public class Main {
 		conf.set("endDate", args[1]);
 		conf.set("selectionType", selectionType);
 		conf.set("informationType", informationType);
+
 		try {
 			Job job = Job.getInstance(conf, "dataweather");
 			job.setJarByClass(Main.class);
@@ -67,18 +69,18 @@ public class Main {
 			 */
 
 			FileInputFormat.addInputPath(job, new Path(args[2]));
-			
-            // Usando output como /user/<usuario>/output
-            Path output = new Path("output");
-            // Usando output como argumento            
-            // Path output = new Path(args[3]);
-          
-            FileOutputFormat.setOutputPath(job, output);
 
-            System.out.println("Deletando a pasta output se ela ja existir");
-            // Delete output if exists
-            FileSystem hdfs = FileSystem.get(conf);
-            if (hdfs.exists(output)) hdfs.delete(output, true);
+			// Usando output como /user/<usuario>/output
+			Path output = new Path("output");
+			// Usando output como argumento
+			// Path output = new Path(args[3]);
+
+			FileOutputFormat.setOutputPath(job, output);
+
+			System.out.println("Deletando a pasta output se ela ja existir");
+			// Delete output if exists
+			FileSystem hdfs = FileSystem.get(conf);
+			if (hdfs.exists(output)) hdfs.delete(output, true);
 
 			System.out.println("Input/Output foi");
 
