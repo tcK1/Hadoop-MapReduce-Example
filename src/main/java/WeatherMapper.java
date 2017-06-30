@@ -63,6 +63,15 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 
 		// se tudo certo ate agora, começa as contas
 		double information = Double.parseDouble(line.substring(24, 30)); // temperatura
+		information = Double.parseDouble(line.substring(35, 41)); // dewp
+		information = Double.parseDouble(line.substring(46, 52)); // slp
+		information = Double.parseDouble(line.substring(57, 63)); // stp
+		information = Double.parseDouble(line.substring(68, 73)); // visib
+		information = Double.parseDouble(line.substring(78, 83)); // wdsp
+		information = Double.parseDouble(line.substring(88, 93)); // mxspd
+
+		information = Double.parseDouble(line.substring(95, 100)); // gust
+		// falta temperatura maxima
 		System.out.println("indo para o reducer " + date + " " + information);
 		context.write(new Text(date), new DoubleWritable(information));
 	}
