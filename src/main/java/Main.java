@@ -67,12 +67,18 @@ public class Main {
 			 */
 
 			FileInputFormat.addInputPath(job, new Path(args[2]));
-			FileOutputFormat.setOutputPath(job, new Path(args[3]));
+			
+            // Usando output como /user/<usuario>/output
+            Path output = new Path("output");
+            // Usando output como argumento            
+            // Path output = new Path(args[3]);
+          
+            FileOutputFormat.setOutputPath(job, output);
 
             System.out.println("Deletando a pasta output se ela ja existir");
             // Delete output if exists
             FileSystem hdfs = FileSystem.get(conf);
-            if (hdfs.exists(new Path(args[3]))) hdfs.delete(new Path(args[3]), true);
+            if (hdfs.exists(output)) hdfs.delete(output, true);
 
 			System.out.println("Input/Output foi");
 
