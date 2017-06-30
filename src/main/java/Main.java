@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -47,27 +49,41 @@ public class Main {
 		try {
 			Job job = Job.getInstance(conf, "dataweather");
 			job.setJarByClass(Main.class);
+			job.setMapperClass(WeatherMapper.class);
+			job.setCombinerClass(StatisticReducer.class);
+			job.setReducerClass(StatisticReducer.class);
+			job.setOutputKeyClass(Text.class);
+			job.setOutputValueClass(IntWritable.class);
+
+			/*
+			 * LAÇO QUE DA .addInputPath() PARA CADA PASTA DE ANO AQUI
+			 */
 
 			FileInputFormat.addInputPath(job, new Path(args[2]));
 			FileOutputFormat.setOutputPath(job, new Path(args[3]));
 
-			if (job.waitForCompletion(true)) {
+			System.out.println("Input/Output foi");
 
+			if (job.waitForCompletion(true)) {
+				System.out.println("acabou o job");
 				System.exit(0);
 			} else {
-
+				System.out.println("fim");
 				System.exit(1);
 			}
 		} catch (IOException e) {
 			System.out.println("Não foi possível criar o job");
 			System.err.println(e);
 		} catch (ClassNotFoundException e) {
+			System.out.println(e);
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
+			System.out.println(e);
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.out.println("fim");
 
 	}
 }

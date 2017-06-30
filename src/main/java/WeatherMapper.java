@@ -9,14 +9,9 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-import com.sun.org.apache.commons.logging.Log;
-import com.sun.org.apache.commons.logging.LogFactory;
-
 public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritable> {
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-	Log log = LogFactory.getLog(WeatherMapper.class);
 
 	private boolean isValidDate(String actualDate, String startDate, String endDate) throws ParseException {
 		Date actual = dateFormat.parse(actualDate);
@@ -24,10 +19,10 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		Date end = dateFormat.parse(endDate);
 
 		if (actual.after(start) && actual.before(end)) {
-			log.debug("data " + actualDate + " valida");
+			System.out.println("data " + actualDate + " valida");
 			return true;
 		}
-		log.debug("data " + actualDate + " INvalida");
+		System.out.println("data " + actualDate + " INvalida");
 		return false;
 	}
 
@@ -36,10 +31,10 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 			throws IOException, InterruptedException {
 		// final double MISSING4 = 9999.9;
 		// final double MISSING3 = 999.9;
-		log.debug("Comecou o mapper");
+		System.out.println("Comecou o mapper");
 
 		String line = value.toString();
-		log.debug("lendo linha " + line);
+		System.out.println("lendo linha " + line);
 
 		// o arquivo começa com "STN"... Ignorar primeira linha
 		if (line.startsWith("S")) {
@@ -48,9 +43,9 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 
 		String year = line.substring(14, 18);
 		String month = line.substring(18, 20);
-		String day = line.substring(20, 21);
+		String day = line.substring(20, 22);
 		System.out.println("data: " + day + "/" + month + "/" + year);
-		String date = day + "/" + month + "/" + "/" + year;
+		String date = day + "/" + month + "/" + year;
 
 		// verifica se a data lida é para ser analisada
 		try {
@@ -68,6 +63,7 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 
 		// se tudo certo ate agora, começa as contas
 		double information = Double.parseDouble(line.substring(24, 30)); // temperatura
+
 		context.write(new Text(date), new DoubleWritable(information));
 	}
 }

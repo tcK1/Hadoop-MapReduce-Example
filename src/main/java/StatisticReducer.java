@@ -3,18 +3,13 @@ import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
-import org.apache.tools.ant.taskdefs.MacroDef.Text;
-
-import com.sun.org.apache.commons.logging.Log;
-import com.sun.org.apache.commons.logging.LogFactory;
 
 public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
 
 	private MultipleOutputs<Text, DoubleWritable> mos;
-
-	Log log = LogFactory.getLog(WeatherMapper.class);
 
 	private double average(double total, int quantity) {
 		return total / quantity;
@@ -35,7 +30,7 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 	@Override
 	protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)
 			throws IOException, InterruptedException {
-		log.debug("Comecou o reducer");
+		System.out.println("Comecou o reducer");
 		Configuration conf = context.getConfiguration();
 
 		double total = 0.0;
@@ -49,11 +44,11 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 		double average = average(total, aux);
 		double standarDeviation = standardDeviation(values, aux, average);
 
-		DoubleWritable dw = new DoubleWritable(average);
-		mos.write("mean", key, dw);
-		dw.set(standarDeviation);
-		mos.write("standart-deviation", key, dw);
-		// context.write(key, new DoubleWritable(average));
+		// DoubleWritable dw = new DoubleWritable(average);
+		// mos.write("mean", key, dw);
+		// dw.set(standarDeviation);
+		// mos.write("standart-deviation", key, dw);
+		context.write(key, new DoubleWritable(average));
 
 	}
 
