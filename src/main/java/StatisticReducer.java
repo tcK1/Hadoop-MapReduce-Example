@@ -42,12 +42,12 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 		}
 
 		double average = average(total, aux);
-		double standarDeviation = standardDeviation(values, aux, average);
+		double standardDeviation = standardDeviation(values, aux, average);
 
 		// DoubleWritable dw = new DoubleWritable(average);
 		// mos.write("mean", key, dw);
 		// dw.set(standarDeviation);
-		// mos.write("standart-deviation", key, dw);
+		// mos.write("standard-deviation", key, dw);
 		context.write(key, new DoubleWritable(average));
 
 	}
