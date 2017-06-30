@@ -63,7 +63,7 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 
 		// se tudo certo ate agora, começa as contas
 		double information = Double.parseDouble(line.substring(24, 30)); // temperatura
-
+		System.out.println("indo para o reducer " + date + " " + information);
 		context.write(new Text(date), new DoubleWritable(information));
 	}
 }

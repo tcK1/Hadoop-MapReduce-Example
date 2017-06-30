@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -50,10 +51,15 @@ public class Main {
 			Job job = Job.getInstance(conf, "dataweather");
 			job.setJarByClass(Main.class);
 			job.setMapperClass(WeatherMapper.class);
-			job.setCombinerClass(StatisticReducer.class);
+			// job.setCombinerClass(StatisticReducer.class);
 			job.setReducerClass(StatisticReducer.class);
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(IntWritable.class);
+
+			job.setMapOutputKeyClass(Text.class);
+			job.setMapOutputValueClass(DoubleWritable.class);
+			job.setOutputKeyClass(Text.class);
+			job.setOutputValueClass(Text.class);
 
 			/*
 			 * LAÇO QUE DA .addInputPath() PARA CADA PASTA DE ANO AQUI
