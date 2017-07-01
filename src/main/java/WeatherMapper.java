@@ -22,10 +22,10 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		Date end = dateFormat.parse(endDate);
 
 		if (actual.after(start) && actual.before(end)) {
-			System.out.println("data " + actualDate + " valida");
+			// System.out.println("data " + actualDate + " valida");
 			return true;
 		}
-		System.out.println("data " + actualDate + " INvalida");
+		// System.out.println("data " + actualDate + " INvalida");
 		return false;
 	}
 
@@ -51,10 +51,10 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 	protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, DoubleWritable>.Context context)
 			throws IOException, InterruptedException {
 
-		System.out.println("Comecou o mapper");
+		// System.out.println("Comecou o mapper");
 
 		String line = value.toString();
-		System.out.println("lendo linha " + line);
+		// System.out.println("lendo linha " + line);
 
 		// o arquivo começa com "STN"... Ignorar primeira linha
 		if (line.startsWith("S")) {
@@ -64,7 +64,7 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		String year = line.substring(14, 18);
 		String month = line.substring(18, 20);
 		String day = line.substring(20, 22);
-		System.out.println("data: " + day + "/" + month + "/" + year);
+		// System.out.println("data: " + day + "/" + month + "/" + year);
 		String date = day + "/" + month + "/" + year;
 
 		// verifica se a data lida é para ser analisada
@@ -128,7 +128,8 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		group = getSelectionType(conf.get("selectionType"), date);
 
 		if (validData) {
-			System.out.println("indo para o reducer " + group + " " + information);
+			// System.out.println("indo para o reducer " + group + " " +
+			// information);
 			context.write(new Text(group), new DoubleWritable(information));
 		}
 

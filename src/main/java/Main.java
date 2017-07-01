@@ -80,9 +80,10 @@ public class Main {
 			// Itera todos os anos (da data inicial a final), inserindo no caminho de arquivos de cada ano
 			String path;
 			while (firstYearI <= lastYearI) {
-					path = args[2] + "/" + firstYearI;
-					if (hdfs.exists(new Path(path))) FileInputFormat.addInputPath(job, new Path(path));
-					firstYearI++;
+				path = args[2] + "/" + firstYearI;
+				if (hdfs.exists(new Path(path)))
+					FileInputFormat.addInputPath(job, new Path(path));
+				firstYearI++;
 			}
 
 			// Usando output como /user/<usuario>/output

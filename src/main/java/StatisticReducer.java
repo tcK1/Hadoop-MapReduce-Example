@@ -1,4 +1,6 @@
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
@@ -11,14 +13,20 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 
 	private MultipleOutputs<Text, DoubleWritable> mos;
 
-	private double average(double total, int quantity) {
-		return total / quantity;
+	private double average(List<Double> values) {
+		double total = 0;
+		for (double v : values) {
+			total = total + v;
+		}
+		return total / values.size();
 	}
 
-	private double standardDeviation(Iterable<DoubleWritable> values, int quantity, double average) {
-		double temp = 0;
-		for (DoubleWritable value : values) temp += Math.pow((value.get() - average), 2.0);
-		return Math.sqrt(temp / (quantity-1));
+	private double standardDeviation(List<Double> values, double average) {
+		double aux = 0;
+		for (double value : values) {
+			aux = aux + Math.pow(value - average, 2.0);
+		}
+		return Math.sqrt(aux / values.size());
 	}
 
 	private double leastSquares(List<Double> x, List<Double> y) {
@@ -31,22 +39,17 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 		System.out.println("Comecou o reducer");
 		Configuration conf = context.getConfiguration();
 
-		double total = 0.0;
-		int qnt = 0;
+		List<Double> allValues = new ArrayList<Double>();
 
 		for (DoubleWritable value : values) {
-			total += value.get();
-			qnt++;
+			allValues.add(value.get());
 		}
 
-		double average = average(total, qnt);
-		double standardDeviation = standardDeviation(values, qnt, average);
+		double average = average(allValues);
+		double standardDeviation = standardDeviation(allValues, average);
 
-		// DoubleWritable dw = new DoubleWritable(average);
-		// mos.write("mean", key, dw);
-		// dw.set(standarDeviation);
-		// mos.write("standard-deviation", key, dw);
-		context.write(key, new DoubleWritable(average));
+		context.write(new Text("avg" + key), new DoubleWritable(average));
+		context.write(new Text("dev" + key), new DoubleWritable(standardDeviation));
 
 	}
 
