@@ -29,6 +29,24 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		return false;
 	}
 
+	private String getSelectionType(String selectionType, String date) throws IllegalArgumentException {
+		switch (selectionType) {
+		case "D":
+			return date.substring(0, 2);
+		case "M":
+			return date.substring(3, 5);
+		case "A":
+			return date.substring(6, 10);
+		case "MA":
+			return date.substring(3, 10);
+		case "T":
+			return date;
+		default:
+			throw new IllegalArgumentException("tipo de agrupamento invalido " + selectionType);
+		}
+
+	}
+
 	@Override
 	protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, DoubleWritable>.Context context)
 			throws IOException, InterruptedException {
@@ -97,18 +115,21 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 			validData = information != MISSING3;
 			break;
 		case 9:
-			// falta ver qual substring pegar para ver o maixmo de temperatura
+			information = Double.parseDouble(line.substring(102, 108)); // temp
+			validData = information != MISSING3;
 			break;
 		default:
 			System.out.println("Tipo de informacao invalido. Deve ser um numero entre 1 a 9. "
 					+ Integer.parseInt(conf.get("informationType")));
 			break;
-
 		}
 
+		String group = "";
+		group = getSelectionType(conf.get("selectionType"), date);
+
 		if (validData) {
-			System.out.println("indo para o reducer " + date + " " + information);
-			context.write(new Text(date), new DoubleWritable(information));
+			System.out.println("indo para o reducer " + group + " " + information);
+			context.write(new Text(group), new DoubleWritable(information));
 		}
 
 	}
