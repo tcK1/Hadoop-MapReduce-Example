@@ -64,11 +64,23 @@ public class Main {
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(Text.class);
 
+			FileSystem hdfs = FileSystem.get(conf);
+
 			/*
 			 * LAÇO QUE DA .addInputPath() PARA CADA PASTA DE ANO AQUI
 			 */
 
-			FileInputFormat.addInputPath(job, new Path(args[2]));
+			String firstYear = (args[0].split("/"))[2];
+			String lastYear = (args[1].split("/"))[2];
+			int firstYearI = Integer.parseInt(firstYear);
+			int lastYearI = Integer.parseInt(lastYear);
+
+			String path;
+			while (firstYearI <= lastYearI) {
+					path = args[2] + "/" + firstYearI;
+					if (hdfs.exists(new Path(path))) FileInputFormat.addInputPath(job, new Path(path));
+					firstYearI++;
+			}
 
 			// Usando output como /user/<usuario>/output
 			Path output = new Path("output");
@@ -79,7 +91,6 @@ public class Main {
 
 			System.out.println("Deletando a pasta output se ela ja existir");
 			// Delete output if exists
-			FileSystem hdfs = FileSystem.get(conf);
 			if (hdfs.exists(output)) hdfs.delete(output, true);
 
 			System.out.println("Input/Output foi");
