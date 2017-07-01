@@ -1,5 +1,8 @@
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.apache.hadoop.conf.Configuration;
@@ -77,7 +80,8 @@ public class Main {
 			String lastYear = (args[1].split("/"))[2];
 			int lastYearI = Integer.parseInt(lastYear);
 
-			// Itera todos os anos (da data inicial a final), inserindo no caminho de arquivos de cada ano
+			// Itera todos os anos (da data inicial a final), inserindo no caminho de
+			// arquivos de cada ano
 			String path;
 			while (firstYearI <= lastYearI) {
 				path = args[2] + "/" + firstYearI;
@@ -95,11 +99,13 @@ public class Main {
 
 			System.out.println("Deletando a pasta output se ela ja existir");
 			// Checa se a pasta de output ja existe, e se existir deleta a mesma
-			if (hdfs.exists(output)) hdfs.delete(output, true);
+			if (hdfs.exists(output))
+				hdfs.delete(output, true);
 
 			System.out.println("Input/Output foi");
 
 			if (job.waitForCompletion(true)) {
+				getAverageList(hdfs);
 				System.out.println("acabou o job");
 				System.exit(0);
 			} else {
@@ -120,5 +126,20 @@ public class Main {
 		}
 		System.out.println("fim");
 
+	}
+
+	public static ArrayList<Tuple> getAverageList(FileSystem hdfs) throws IOException {
+		Path path = new Path("output/part-r-00000");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(hdfs.open(path)));
+		ArrayList<Tuple> list = new ArrayList<Tuple>();
+		String line = reader.readLine();
+		while (line != null) {
+			String[] splitLine = line.split(" ");
+			if (splitLine[0] == "avg")
+				list.add(new Tuple(splitLine[1], Double.valueOf(splitLine[2])));
+			line = reader.readLine();
+		}
+		;
+		return list;
 	}
 }
