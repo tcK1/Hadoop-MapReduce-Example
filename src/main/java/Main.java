@@ -3,8 +3,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -24,9 +24,9 @@ public class Main {
 		System.out.println("Como deseja que os dados sejam agrupados?");
 
 		System.out.println("D		-> Dia"); // Dia
-		System.out.println("DS	-> Dia da Semana"); // Seg, Ter...
 		System.out.println("M		-> Mes"); // Mes
 		System.out.println("A		-> Ano"); // Ano
+		System.out.println("MA	-> Mes do ano"); // Jan, fev...
 		String selectionType = sc.nextLine().toUpperCase();
 
 		System.out.println("Qual informacao deseja analisar?");
@@ -80,7 +80,8 @@ public class Main {
 			System.out.println("Deletando a pasta output se ela ja existir");
 			// Delete output if exists
 			FileSystem hdfs = FileSystem.get(conf);
-			if (hdfs.exists(output)) hdfs.delete(output, true);
+			if (hdfs.exists(output))
+				hdfs.delete(output, true);
 
 			System.out.println("Input/Output foi");
 
