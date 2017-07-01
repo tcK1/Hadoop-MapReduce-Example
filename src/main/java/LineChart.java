@@ -20,8 +20,9 @@ public class LineChart extends JFrame {
 
 	List<Double> yValue;
 
-	public LineChart(List<Double> x, List<Double> y) {
+	public LineChart(List<Double> xValue, List<Double> yValue) {
 		super("XY Line Chart Example with JFreechart");
+
 		this.xValue = xValue;
 		this.yValue = yValue;
 
@@ -62,12 +63,12 @@ public class LineChart extends JFrame {
 		return dataset;
 	}
 
-	public static void drawGraph(List<Double> xValue, List<Double> yValue) {
+	public void drawGraph(List<Double> xValue, List<Double> yValue) {
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new LineChart().setVisible(true);
+				new LineChart(xValue, yValue).setVisible(true);
 			}
 		});
 	}
