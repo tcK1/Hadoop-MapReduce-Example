@@ -11,6 +11,9 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritable> {
 
+	static final double MISSING4 = 9999.9;
+	static final double MISSING3 = 999.9;
+
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	private boolean isValidDate(String actualDate, String startDate, String endDate) throws ParseException {
@@ -29,8 +32,7 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 	@Override
 	protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, DoubleWritable>.Context context)
 			throws IOException, InterruptedException {
-		// final double MISSING4 = 9999.9;
-		// final double MISSING3 = 999.9;
+
 		System.out.println("Comecou o mapper");
 
 		String line = value.toString();
@@ -48,11 +50,10 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		String date = day + "/" + month + "/" + year;
 
 		// verifica se a data lida é para ser analisada
+		Configuration conf = context.getConfiguration();
+		String startDate = conf.get("startDate");
+		String endDate = conf.get("endDate");
 		try {
-			Configuration conf = context.getConfiguration();
-			String startDate = conf.get("startDate");
-			String endDate = conf.get("endDate");
-
 			if (!isValidDate(date, startDate, endDate)) {
 				return;
 			}
@@ -62,17 +63,53 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		}
 
 		// se tudo certo ate agora, começa as contas
-		double information = Double.parseDouble(line.substring(24, 30)); // temperatura
-		//information = Double.parseDouble(line.substring(35, 41)); // dewp
-		//information = Double.parseDouble(line.substring(46, 52)); // slp
-		//information = Double.parseDouble(line.substring(57, 63)); // stp
-		//information = Double.parseDouble(line.substring(68, 73)); // visib
-		//information = Double.parseDouble(line.substring(78, 83)); // wdsp
-		//information = Double.parseDouble(line.substring(88, 93)); // mxspd
-		//information = Double.parseDouble(line.substring(95, 100)); // gust
-		
-        // falta temperatura maxima
-		System.out.println("indo para o reducer " + date + " " + information);
-		context.write(new Text(date), new DoubleWritable(information));
+		double information = 0;
+		boolean validData = false;
+		switch (Integer.parseInt(conf.get("informationType"))) {
+		case 1:
+			information = Double.parseDouble(line.substring(24, 30)); // temperatura
+			validData = information != MISSING4;
+			break;
+		case 2:
+			information = Double.parseDouble(line.substring(35, 41)); // dewp
+			validData = information != MISSING4;
+			break;
+		case 3:
+			information = Double.parseDouble(line.substring(46, 52)); // slp
+			validData = information != MISSING4;
+			break;
+		case 4:
+			information = Double.parseDouble(line.substring(57, 63)); // stp
+			validData = information != MISSING4;
+			break;
+		case 5:
+			information = Double.parseDouble(line.substring(68, 73)); // visib
+			validData = information != MISSING3;
+			break;
+		case 6:
+			information = Double.parseDouble(line.substring(78, 83)); // wdsp
+			validData = information != MISSING3;
+		case 7:
+			information = Double.parseDouble(line.substring(88, 93)); // mxspd
+			validData = information != MISSING3;
+		case 8:
+			information = Double.parseDouble(line.substring(95, 100)); // gust
+			validData = information != MISSING3;
+			break;
+		case 9:
+			// falta ver qual substring pegar para ver o maixmo de temperatura
+			break;
+		default:
+			System.out.println("Tipo de informacao invalido. Deve ser um numero entre 1 a 9. "
+					+ Integer.parseInt(conf.get("informationType")));
+			break;
+
+		}
+
+		if (validData) {
+			System.out.println("indo para o reducer " + date + " " + information);
+			context.write(new Text(date), new DoubleWritable(information));
+		}
+
 	}
 }
