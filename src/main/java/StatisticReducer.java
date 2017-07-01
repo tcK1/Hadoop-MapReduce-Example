@@ -16,11 +16,9 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 	}
 
 	private double standardDeviation(Iterable<DoubleWritable> values, int quantity, double average) {
-		double aux = 0;
-		for (DoubleWritable value : values) {
-			aux = aux + Math.pow(value.get() - average, 2.0);
-		}
-		return Math.sqrt(aux / quantity);
+		double temp = 0;
+		for (DoubleWritable value : values) temp += Math.pow((value.get() - average), 2.0);
+		return Math.sqrt(temp / (quantity-1));
 	}
 
 	private double leastSquares(List<Double> x, List<Double> y) {
@@ -34,15 +32,15 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 		Configuration conf = context.getConfiguration();
 
 		double total = 0.0;
-		int aux = 0;
+		int qnt = 0;
 
 		for (DoubleWritable value : values) {
-			total = total + value.get();
-			aux++;
+			total += value.get();
+			qnt++;
 		}
 
-		double average = average(total, aux);
-		double standardDeviation = standardDeviation(values, aux, average);
+		double average = average(total, qnt);
+		double standardDeviation = standardDeviation(values, qnt, average);
 
 		// DoubleWritable dw = new DoubleWritable(average);
 		// mos.write("mean", key, dw);

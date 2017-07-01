@@ -44,6 +44,7 @@ public class Main {
 
 		sc.close();
 
+		// Seta os valores a serem usados durante o MapReduce
 		Configuration conf = new Configuration();
 		conf.set("startDate", args[0]);
 		conf.set("endDate", args[1]);
@@ -51,11 +52,15 @@ public class Main {
 		conf.set("informationType", informationType);
 
 		try {
+			// Cria o job a ser executado
 			Job job = Job.getInstance(conf, "dataweather");
 			job.setJarByClass(Main.class);
+
 			job.setMapperClass(WeatherMapper.class);
 			// job.setCombinerClass(StatisticReducer.class);
+
 			job.setReducerClass(StatisticReducer.class);
+
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(IntWritable.class);
 
@@ -64,17 +69,15 @@ public class Main {
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(Text.class);
 
+			// Cria uma instancia do sistema de arquivos para podemos consultar os arquivos
 			FileSystem hdfs = FileSystem.get(conf);
 
-			/*
-			 * LAÇO QUE DA .addInputPath() PARA CADA PASTA DE ANO AQUI
-			 */
-
 			String firstYear = (args[0].split("/"))[2];
-			String lastYear = (args[1].split("/"))[2];
 			int firstYearI = Integer.parseInt(firstYear);
+			String lastYear = (args[1].split("/"))[2];
 			int lastYearI = Integer.parseInt(lastYear);
 
+			// Itera todos os anos (da data inicial a final), inserindo no caminho de arquivos de cada ano
 			String path;
 			while (firstYearI <= lastYearI) {
 					path = args[2] + "/" + firstYearI;
@@ -85,12 +88,12 @@ public class Main {
 			// Usando output como /user/<usuario>/output
 			Path output = new Path("output");
 			// Usando output como argumento
-			// Path output = new Path(args[3]);
+			/* Path output = new Path(args[3]); */
 
 			FileOutputFormat.setOutputPath(job, output);
 
 			System.out.println("Deletando a pasta output se ela ja existir");
-			// Delete output if exists
+			// Checa se a pasta de output ja existe, e se existir deleta a mesma
 			if (hdfs.exists(output)) hdfs.delete(output, true);
 
 			System.out.println("Input/Output foi");
