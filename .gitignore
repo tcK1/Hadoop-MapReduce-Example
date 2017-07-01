@@ -1,3 +1,4 @@
 /src/main/java/*.class
+/src/main/java/*.jar
 /bin/
 /target/
