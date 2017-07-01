@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.apache.hadoop.conf.Configuration;
@@ -129,13 +130,13 @@ public class Main {
 		System.out.println("fim");
 
 		// CODIGO PARA TESTAR O GRAFICO
-		// List<Double> x = new ArrayList<>();
-		// List<Double> y = new ArrayList<>();
-		// for (int i = 0; i < 10; i++) {
-		// x.add((double) i);
-		// x.add((double) (i + 3));
-		// }
-		// LineChart chart = new LineChart(x, y);
+		List<Double> x = new ArrayList<>();
+		List<Double> y = new ArrayList<>();
+		for (int i = 0; i < 10; i++) {
+			x.add((double) i);
+			x.add((double) (i + 3));
+		}
+		LineChart chart = new LineChart(x, y);
 	}
 
 	public static ArrayList<Tuple> getAverageList(FileSystem hdfs) throws IOException {
