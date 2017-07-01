@@ -69,7 +69,8 @@ public class Main {
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(Text.class);
 
-			// Cria uma instancia do sistema de arquivos para podemos consultar os arquivos
+			// Cria uma instancia do sistema de arquivos para podemos consultar
+			// os arquivos
 			FileSystem hdfs = FileSystem.get(conf);
 
 			String firstYear = (args[0].split("/"))[2];
@@ -77,7 +78,8 @@ public class Main {
 			String lastYear = (args[1].split("/"))[2];
 			int lastYearI = Integer.parseInt(lastYear);
 
-			// Itera todos os anos (da data inicial a final), inserindo no caminho de arquivos de cada ano
+			// Itera todos os anos (da data inicial a final), inserindo no
+			// caminho de arquivos de cada ano
 			String path;
 			while (firstYearI <= lastYearI) {
 				path = args[2] + "/" + firstYearI;
@@ -95,13 +97,14 @@ public class Main {
 
 			System.out.println("Deletando a pasta output se ela ja existir");
 			// Checa se a pasta de output ja existe, e se existir deleta a mesma
-			if (hdfs.exists(output)) hdfs.delete(output, true);
+			if (hdfs.exists(output))
+				hdfs.delete(output, true);
 
 			System.out.println("Input/Output foi");
 
 			if (job.waitForCompletion(true)) {
 				System.out.println("acabou o job");
-				System.exit(0);
+				// System.exit(0);
 			} else {
 				System.out.println("fim");
 				System.exit(1);
@@ -120,5 +123,13 @@ public class Main {
 		}
 		System.out.println("fim");
 
+		// CODIGO PARA TESTAR O GRAFICO
+		// List<Double> x = new ArrayList<>();
+		// List<Double> y = new ArrayList<>();
+		// for (int i = 0; i < 10; i++) {
+		// x.add((double) i);
+		// x.add((double) (i + 3));
+		// }
+		// LineChart chart = new LineChart(x, y);
 	}
 }
