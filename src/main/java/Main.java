@@ -77,9 +77,10 @@ public class Main {
 
 			String path;
 			while (firstYearI <= lastYearI) {
-					path = args[2] + "/" + firstYearI;
-					if (hdfs.exists(new Path(path))) FileInputFormat.addInputPath(job, new Path(path));
-					firstYearI++;
+				path = args[2] + "/" + firstYearI;
+				if (hdfs.exists(new Path(path)))
+					FileInputFormat.addInputPath(job, new Path(path));
+				firstYearI++;
 			}
 
 			// Usando output como /user/<usuario>/output
@@ -91,7 +92,8 @@ public class Main {
 
 			System.out.println("Deletando a pasta output se ela ja existir");
 			// Delete output if exists
-			if (hdfs.exists(output)) hdfs.delete(output, true);
+			if (hdfs.exists(output))
+				hdfs.delete(output, true);
 
 			System.out.println("Input/Output foi");
 
