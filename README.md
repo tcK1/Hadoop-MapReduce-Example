@@ -166,6 +166,15 @@ Para encerrar usamos:
   ```
     $ sbin/stop-dfs.sh
   ```
+  
+# Executando o código criado
+
+Os agumentos são Data de inicio, data de fim e o local do input
+
+Ex:
+```
+bin/hadoop jar DataWeather.jar 01/01/1920 06/06/1930 /user/root/input/1930
+```
 
 ___
 
