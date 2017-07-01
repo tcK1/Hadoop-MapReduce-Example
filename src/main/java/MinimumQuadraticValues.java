@@ -11,8 +11,15 @@ public class MinimumQuadraticValues {
     return total / axis.size();
   }
 
-  public static double[] mmq(ArrayList yAxis) {
+  public static double[] mmq(ArrayList axis) {
 
+    // Le o arraylist com label e info e pega só o label para as contas.
+    ArrayList yAxis = new ArrayList();
+    for (int i = 0; i <= axis.size(); i++) {
+			yAxis.add(axis.label);
+		}
+
+    // Faz um arraylist de 0 até n onde n é a quantidade de datas
     ArrayList xAxis = new ArrayList();
     for (int i = 0; i <= xAxis.size(); i++) {
 			xAxis.add(i);
