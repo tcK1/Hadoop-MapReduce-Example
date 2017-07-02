@@ -11,7 +11,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -118,7 +117,7 @@ public class Main {
 			Path output = new Path("output"); // output := /user/<username>/output
 			FileOutputFormat.setOutputPath(job, output);
 			if (hdfs.exists(output)) {
-				System.err.println("Pasta 'output' existe, mas será apagada.");
+				System.out.println("Pasta 'output' existe, mas será apagada.");
 				hdfs.delete(output, true);
 			}
 			for (int year = firstYear; year <= lastYear; year++) {
@@ -134,7 +133,7 @@ public class Main {
 			if (job.waitForCompletion(true)) {
 				ArrayList<Tuple> tuples = getTupleList(hdfs);
 				double[] data = LeastSquares.calculate(tuples);
-				new LineChart(tuples, data, informationType);
+				new LineChart(tuples, data, informationType, startDate, endDate);
 			} else
 				System.exit(1);
 		} catch (IOException e) {
@@ -199,11 +198,9 @@ public class Main {
 		job.setMapperClass(WeatherMapper.class);
 		job.setReducerClass(StatisticReducer.class);
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(IntWritable.class);
+		job.setOutputValueClass(DoubleWritable.class);
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(DoubleWritable.class);
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(Text.class);
 
 		return job;
 	}
