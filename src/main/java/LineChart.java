@@ -10,15 +10,12 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class LineChart {
 
-	ArrayList<Tuple> avg;
-
-	ArrayList<Tuple> dev;
+	ArrayList<Tuple> tuple;
 
 	double[] mmq;
 
-	public LineChart(ArrayList<Tuple> avg, ArrayList<Tuple> dev, double[] mmq) throws IOException {
-		this.avg = avg;
-		this.dev = dev;
+	public LineChart(ArrayList<Tuple> tuple, double[] mmq) throws IOException {
+		this.tuple = tuple;
 		this.mmq = mmq;
 
 		JFreeChart chart = createChartPanel();
@@ -51,13 +48,12 @@ public class LineChart {
 		XYSeries devSerie = new XYSeries("Dev");
 		XYSeries mmqSerie = new XYSeries("Mmq");
 
-		System.out.println(avg.size() + " size do avg");
-		System.out.println(dev.size() + " size do dev");
+		System.out.println(tuple.size() + " size do tuple");
 		System.out.println(mmq.length + " size do mmq");
-		for (int i = 0; i < avg.size() && i < dev.size(); i++) {
+		for (int i = 0; i < tuple.size(); i++) {
 			// System.out.println("adicionou valor no grafico: " + xValue.get(i)
 			// + " " + yValue.get(i));
-			String date = avg.get(i).label;
+			String date = tuple.get(i).date;
 			String[] bDate = date.split("/");
 			int length = bDate.length;
 
@@ -77,8 +73,11 @@ public class LineChart {
 
 			double value = this.mmq[0] + (this.mmq[1] * comparableDate);
 
-			avgSerie.add(comparableDate, avg.get(i).info);
-			devSerie.add(comparableDate, dev.get(i).info);
+			avgSerie.add(comparableDate, tuple.get(i).avg);
+			devSerie.add(comparableDate, tuple.get(i).dev);
+
+			System.out.println("valores mmq: " + comparableDate + ", " + value);
+
 			mmqSerie.add(comparableDate, value);
 			// mmq.add(xValue.get(i), yValue.get(i));
 			// series1.add(1, 2);

@@ -107,12 +107,11 @@ public class Main {
 			System.out.println("Input/Output foi");
 
 			if (job.waitForCompletion(true)) {
-				ArrayList tuplasA = getAverageList(hdfs, "avg");
-				ArrayList tuplasD = getAverageList(hdfs, "dev");
+				ArrayList<Tuple> tuples = getAverageList(hdfs);
 				LeastSquares mmq = new LeastSquares();
-				double[] data = mmq.mmq(tuplasA);
+				double[] data = mmq.mmq(tuples);
 
-				LineChart chart = new LineChart(tuplasA, tuplasD, data);
+				LineChart chart = new LineChart(tuples, data);
 				System.out.println("acabou o job");
 				// System.exit(0);
 			} else {
@@ -124,11 +123,9 @@ public class Main {
 			System.err.println(e);
 		} catch (ClassNotFoundException e) {
 			System.out.println(e);
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			System.out.println(e);
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("fim");
@@ -148,18 +145,42 @@ public class Main {
 		// }
 	}
 
-	public static ArrayList<Tuple> getAverageList(FileSystem hdfs, String option) throws IOException {
+	public static ArrayList<Tuple> getAverageList(FileSystem hdfs) throws IOException {
 		Path path = new Path("output/part-r-00000");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(hdfs.open(path)));
 		ArrayList<Tuple> list = new ArrayList<Tuple>();
 		String line = reader.readLine();
+
+		String date;
+		double avg;
+		double dev;
+
 		while (line != null) {
 			String[] splitLine = line.split(" ");
-			if (splitLine[0] == option)
-				list.add(new Tuple(splitLine[1], Double.valueOf(splitLine[2])));
+
+			for (int i = 0; i < splitLine.length; i++) {
+				System.out.print(i + ": " + splitLine[i] + " / ");
+			}
+			System.out.println();
+
+			String[] values = splitLine[1].split("	");
+
+			System.out.println(splitLine[1]);
+			date = values[0];
+			avg = Double.valueOf(values[1]);
+
+			line = reader.readLine();
+			splitLine = line.split(" ");
+			values = splitLine[1].split("	");
+
+			System.out.println(splitLine[1]);
+			dev = Double.valueOf(values[1]);
+
+			list.add(new Tuple(date, avg, dev));
+			System.out.println("tupla adicionada: " + date + " " + avg + " " + dev);
 			line = reader.readLine();
 		}
-		;
+
 		return list;
 	}
 }

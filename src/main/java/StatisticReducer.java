@@ -48,8 +48,8 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 		double average = average(allValues);
 		double standardDeviation = standardDeviation(allValues, average);
 
-		context.write(new Text("avg" + key), new DoubleWritable(average));
-		context.write(new Text("dev" + key), new DoubleWritable(standardDeviation));
+		context.write(new Text("avg " + key), new DoubleWritable(average));
+		context.write(new Text("dev " + key), new DoubleWritable(standardDeviation));
 
 	}
 
