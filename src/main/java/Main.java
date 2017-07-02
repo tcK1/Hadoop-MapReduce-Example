@@ -22,33 +22,49 @@ public class Main {
 	static String endDate;
 
 	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
 
-		System.out.println("Como deseja que os dados sejam agrupados?");
+		/*** Input handling ***/
 
-		System.out.println("D		-> Dia"); // Dia
-		System.out.println("M		-> Mes"); // Mes
-		System.out.println("A		-> Ano"); // Ano
-		System.out.println("MA	-> Mes do ano"); // Jan, fev...
-		String selectionType = sc.nextLine().toUpperCase();
+		Scanner scanner = new Scanner(System.in);
 
-		System.out.println("Qual informacao deseja analisar?");
+		boolean proceedInput = false;
 
-		System.out.println("1 -> Temperatura"); // TEMP
-		System.out.println("2 -> Ponto de orvalho"); // DEWP
-		System.out.println("3 -> Pressao no nivel do mar"); // SLP
-		System.out.println("4 -> Pressao na estacao"); // STP
-		System.out.println("5 -> Visibilidade"); // VISIB
-		System.out.println("6 -> Velocidade do vento"); // WDSP
-		System.out.println("7 -> Velocidade maxima do vento"); // MXSPD
-		System.out.println("8 -> Velocidade maxima da rajada de vento"); // GUST
-		System.out.println("9 -> Temperatura Maxima");// MAX
-		String informationType = sc.nextLine().toUpperCase();
+		String groupingType;
+		do {
+			System.out.println("Selecione o agrupamento dos dados:");
+			System.out.println("\tD\tDia");
+			System.out.println("\tM\tMês");
+			System.out.println("\tA\tAno");
+			System.out.println("\tMA\tMês do ano"); // Jan, Fev...
+			groupingType = scanner.nextLine().toUpperCase();
+			proceedInput = isGroupingType(groupingType);
+			if (!proceedInput)
+				System.out.println("Seleção inválida. Repita a operação.\n");
+		} while (!proceedInput);
 
-		sc.close();
+		String informationType;
+		do {
+			System.out.println("Selecione a informação a ser analisada:");
+			System.out.println("\tTEMP\tTemperatura"); // 1
+			System.out.println("\tDEWP\tPonto de orvalho"); // 2
+			System.out.println("\tSLP\tPressão no nível do mar"); // 3
+			System.out.println("\tSTP\tPressão na estação"); // 4
+			System.out.println("\tVISIB\tVisibilidade"); // 5
+			System.out.println("\tWDSP\tVelocidade do vento"); // 6
+			System.out.println("\tMXSPD\tVelocidade máxima do vento"); // 7
+			System.out.println("\tGUST\tVelocidade máxima da rajada de vento"); // 8
+			System.out.println("\tMAX\tTemperatura máxima"); // 9
+			System.out.println("\tMIN\tTemperatura mínima"); // 10
+			informationType = scanner.nextLine().toUpperCase();
+			proceedInput = isInformationType(informationType);
+			if (!proceedInput)
+				System.out.println("Seleção inválida. Repita a operação.\n");
+		} while (!proceedInput);
+
+		scanner.close();
 
 		// Seta os valores a serem usados durante o MapReduce
-		Configuration conf = createConf(args[0], args[1], selectionType, informationType);
+		Configuration conf = createConf(args[0], args[1], groupingType, informationType);
 
 		FileSystem hdfs = null;
 		try {
@@ -114,6 +130,24 @@ public class Main {
 
 		System.out.println("fim");
 
+	}
+
+	private static boolean isGroupingType(String selectionType) {
+		switch (selectionType) {
+		case "D":
+		case "M":
+		case "A":
+		case "MA":
+		case "T":
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	private static boolean isInformationType(String informationType) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	private static Job createJob(Configuration conf) {

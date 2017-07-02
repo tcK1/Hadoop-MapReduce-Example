@@ -63,50 +63,50 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 
 		double information = 0;
 		boolean validData = false;
-		switch (Integer.parseInt(conf.get("informationType"))) {
-		case 1:
-			information = Double.parseDouble(line.substring(24, 30)); // temperatura
+		switch (conf.get("informationType")) {
+		case "TEMP":
+			information = Double.parseDouble(line.substring(24, 30));
 			validData = information != MISSING_4;
 			break;
-		case 2:
-			information = Double.parseDouble(line.substring(35, 41)); // dewp
+		case "DEWP":
+			information = Double.parseDouble(line.substring(35, 41));
 			validData = information != MISSING_4;
 			break;
-		case 3:
-			information = Double.parseDouble(line.substring(46, 52)); // slp
+		case "SLP":
+			information = Double.parseDouble(line.substring(46, 52));
 			validData = information != MISSING_4;
 			break;
-		case 4:
-			information = Double.parseDouble(line.substring(57, 63)); // stp
+		case "STP":
+			information = Double.parseDouble(line.substring(57, 63));
 			validData = information != MISSING_4;
 			break;
-		case 5:
-			information = Double.parseDouble(line.substring(68, 73)); // visib
+		case "VISIB":
+			information = Double.parseDouble(line.substring(68, 73));
 			validData = information != MISSING_3;
 			break;
-		case 6:
-			information = Double.parseDouble(line.substring(78, 83)); // wdsp
+		case "WDSP":
+			information = Double.parseDouble(line.substring(78, 83));
 			validData = information != MISSING_3;
-		case 7:
-			information = Double.parseDouble(line.substring(88, 93)); // mxspd
+		case "MXSPD":
+			information = Double.parseDouble(line.substring(88, 93));
 			validData = information != MISSING_3;
-		case 8:
-			information = Double.parseDouble(line.substring(95, 100)); // gust
-			validData = information != MISSING_3;
-			break;
-		case 9:
-			information = Double.parseDouble(line.substring(102, 108)); // temp
+		case "GUST":
+			information = Double.parseDouble(line.substring(95, 100));
 			validData = information != MISSING_3;
 			break;
-		default:
-			System.out.println("Tipo de informacao invalido. Deve ser um numero entre 1 a 9. "
-					+ Integer.parseInt(conf.get("informationType")));
+		case "MAX":
+			information = Double.parseDouble(line.substring(102, 108));
+			validData = information != MISSING_3;
+			break;
+		case "MIN":
+			information = Double.parseDouble(line.substring(110, 116));
+			validData = information != MISSING_3;
 			break;
 		}
 
 		String group = "";
 		try {
-			group = getSelectionType(conf.get("selectionType"), dateString);
+			group = getSelectionType(conf.get("groupingType"), dateString);
 		} catch (IllegalArgumentException e) {
 			System.err.println(e.getMessage());
 		}
