@@ -3,7 +3,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import org.apache.hadoop.conf.Configuration;
@@ -108,7 +107,12 @@ public class Main {
 			System.out.println("Input/Output foi");
 
 			if (job.waitForCompletion(true)) {
-				getAverageList(hdfs);
+				ArrayList tuplasA = getAverageList(hdfs, "avg");
+				ArrayList tuplasD = getAverageList(hdfs, "dev");
+				LeastSquares mmq = new LeastSquares();
+				double[] data = mmq.mmq(tuplasA);
+
+				LineChart chart = new LineChart(tuplasA, tuplasD, data);
 				System.out.println("acabou o job");
 				// System.exit(0);
 			} else {
@@ -129,24 +133,29 @@ public class Main {
 		}
 		System.out.println("fim");
 
-		// CODIGO PARA TESTAR O GRAFICO
-		List<Double> x = new ArrayList<>();
-		List<Double> y = new ArrayList<>();
-		for (int i = 0; i < 10; i++) {
-			x.add((double) i);
-			x.add((double) (i + 3));
-		}
-		LineChart chart = new LineChart(x, y);
+		// // CODIGO PARA TESTAR O GRAFICO
+		// List<Double> x = new ArrayList<>();
+		// List<Double> y = new ArrayList<>();
+		// for (int i = 0; i < 10; i++) {
+		// x.add((double) i);
+		// y.add((double) (i + 3));
+		// }
+		// try {
+		// LineChart chart = new LineChart(x, y);
+		// } catch (IOException e) {
+		// System.err.println("deu ruim pra criar a imagem");
+		// e.printStackTrace();
+		// }
 	}
 
-	public static ArrayList<Tuple> getAverageList(FileSystem hdfs) throws IOException {
+	public static ArrayList<Tuple> getAverageList(FileSystem hdfs, String option) throws IOException {
 		Path path = new Path("output/part-r-00000");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(hdfs.open(path)));
 		ArrayList<Tuple> list = new ArrayList<Tuple>();
 		String line = reader.readLine();
 		while (line != null) {
 			String[] splitLine = line.split(" ");
-			if (splitLine[0] == "avg")
+			if (splitLine[0] == option)
 				list.add(new Tuple(splitLine[1], Double.valueOf(splitLine[2])));
 			line = reader.readLine();
 		}
