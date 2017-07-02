@@ -215,24 +215,12 @@ public class Main {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(hdfs.open(path)));
 		ArrayList<Tuple> list = new ArrayList<Tuple>();
 
-		double average;
-		double standardDeviation;
-
 		String line = reader.readLine();
-		while (line != null) {
-
-			String[] splitLine = line.split(" ");
-			String[] values = splitLine[1].split("\t");
-			average = Double.valueOf(values[1]);
-
+		do {
+			String[] values = line.split("\t");
+			list.add(new Tuple(Double.valueOf(values[1]), Double.valueOf(values[2])));
 			line = reader.readLine();
-			splitLine = line.split(" ");
-			values = splitLine[1].split("\t");
-			standardDeviation = Double.valueOf(values[1]);
-
-			list.add(new Tuple(average, standardDeviation));
-			line = reader.readLine();
-		}
+		} while (line != null);
 		return list;
 	}
 }
