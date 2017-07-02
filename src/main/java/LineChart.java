@@ -59,9 +59,9 @@ public class LineChart {
 			double value = this.mmq[0] + (this.mmq[1] * i + 1);
 			Tuple t = tuple.get(i);
 
-			avgSerie.add(i + 1, t.getAvg());
-			avgMoreSerie.add(i + 1, t.getAvg() + t.getDev());
-			avgLessSerie.add(i + 1, t.getAvg() - t.getDev());
+			avgSerie.add(i + 1, t.average);
+			avgMoreSerie.add(i + 1, t.average + t.standardDeviation);
+			avgLessSerie.add(i + 1, t.average - t.standardDeviation);
 
 			System.out.println("valores mmq: " + i + ", " + value);
 

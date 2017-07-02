@@ -1,19 +1,11 @@
 public class Tuple {
 
-	private double avg;
-	private double dev;
+	double average;
+	double standardDeviation;
 
-	public Tuple(double avg, double dev) {
-		this.avg = avg;
-		this.dev = dev;
-	}
-
-	public double getAvg() {
-		return avg;
-	}
-
-	public double getDev() {
-		return dev;
+	public Tuple(double average, double standardDeviation) {
+		this.average = average;
+		this.standardDeviation = standardDeviation;
 	}
 
 }

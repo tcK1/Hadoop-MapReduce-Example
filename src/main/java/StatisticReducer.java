@@ -8,9 +8,9 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 
-public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
+public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, TupleWritable> {
 
-	private MultipleOutputs<Text, DoubleWritable> mos;
+	private MultipleOutputs<Text, TupleWritable> mos;
 
 	private double average(List<Double> values) {
 		double total = 0;
@@ -42,20 +42,21 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 		double average = average(allValues);
 		double standardDeviation = standardDeviation(allValues, average);
 
-		context.write(new Text("avg " + key), new DoubleWritable(average));
-		context.write(new Text("dev " + key), new DoubleWritable(standardDeviation));
+		// context.write(new Text("avg " + key), new DoubleWritable(average));
+		// context.write(new Text("dev " + key), new DoubleWritable(standardDeviation));
+		context.write(new Text(key), new TupleWritable(new Tuple(average, standardDeviation)));
 
 	}
 
 	@Override
-	protected void cleanup(Reducer<Text, DoubleWritable, Text, DoubleWritable>.Context context)
+	protected void cleanup(Reducer<Text, DoubleWritable, Text, TupleWritable>.Context context)
 			throws java.io.IOException, InterruptedException {
 		mos.close();
 	}
 
 	@Override()
-	protected void setup(Reducer<Text, DoubleWritable, Text, DoubleWritable>.Context context)
+	protected void setup(Reducer<Text, DoubleWritable, Text, TupleWritable>.Context context)
 			throws java.io.IOException, java.lang.InterruptedException {
-		mos = new MultipleOutputs<Text, DoubleWritable>(context);
+		mos = new MultipleOutputs<Text, TupleWritable>(context);
 	}
 }

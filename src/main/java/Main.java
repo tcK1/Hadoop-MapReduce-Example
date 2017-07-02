@@ -82,7 +82,7 @@ public class Main {
 				SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 				proceedInput = dateFormatter.parse(startDate).before(dateFormatter.parse(endDate));
 				if (!proceedInput) {
-					System.out.println("Data de fim é menor que data de fim.\n");
+					System.out.println("Data de fim é menor que data de início.\n");
 				}
 			} catch (ParseException e) {
 				proceedInput = false;
@@ -132,9 +132,8 @@ public class Main {
 
 		try {
 			if (job.waitForCompletion(true)) {
-				LeastSquares mmq = new LeastSquares();
-				ArrayList<Tuple> tuples = getAverageList(hdfs);
-				double[] data = mmq.mmq(tuples);
+				ArrayList<Tuple> tuples = getTupleList(hdfs);
+				double[] data = LeastSquares.calculate(tuples);
 				new LineChart(tuples, data, informationType);
 			} else {
 				System.out.println("fim com exit");
@@ -145,9 +144,6 @@ public class Main {
 		} catch (ClassNotFoundException | InterruptedException e) {
 			e.printStackTrace();
 		}
-
-		System.out.println("fim do final");
-
 	}
 
 	private static boolean validDate(String date) {
@@ -194,12 +190,7 @@ public class Main {
 	private static Job createJob(Configuration conf) {
 		Job job = null;
 		try {
-			// Cria o job a ser executado
 			job = Job.getInstance(conf, "dataweather");
-
-			// Cria uma instancia do sistema de arquivos para podemos consultar
-			// os arquivos
-
 		} catch (IOException e) {
 			System.out.println("Não foi possível criar o job");
 			System.err.println(e);
@@ -217,43 +208,17 @@ public class Main {
 		return job;
 	}
 
-	public static ArrayList<Tuple> getAverageList(FileSystem hdfs) throws IOException {
+	public static ArrayList<Tuple> getTupleList(FileSystem hdfs) throws IOException {
 		Path path = new Path("output/part-r-00000");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(hdfs.open(path)));
 		ArrayList<Tuple> list = new ArrayList<Tuple>();
+
 		String line = reader.readLine();
-
-		double avg;
-		double dev;
-		int aux = 1;
-		while (line != null) {
-			String[] splitLine = line.split(" ");
-
-			for (int i = 0; i < splitLine.length; i++) {
-				System.out.print(i + ": " + splitLine[i] + " / ");
-			}
-			System.out.println();
-
-			String[] values = splitLine[1].split("	");
-
-			System.out.println(splitLine[1]);
-			// String date = values[0];
-			avg = Double.valueOf(values[1]);
-
+		do {
+			String[] values = line.split("\t");
+			list.add(new Tuple(Double.valueOf(values[1]), Double.valueOf(values[2])));
 			line = reader.readLine();
-			splitLine = line.split(" ");
-			values = splitLine[1].split("	");
-
-			System.out.println(splitLine[1]);
-			dev = Double.valueOf(values[1]);
-
-			list.add(new Tuple(avg, dev));
-			// esse aux é só pra imprimir. quando tirar o print, tirar o aux
-			System.out.println("tupla adicionada: " + aux + " " + avg + " " + dev);
-			line = reader.readLine();
-			aux++;
-		}
-
+		} while (line != null);
 		return list;
 	}
 }

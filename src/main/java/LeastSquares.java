@@ -10,12 +10,12 @@ public class LeastSquares {
 		return total / axis.size();
 	}
 
-	public double[] mmq(ArrayList<Tuple> axis) {
+	public static double[] calculate(ArrayList<Tuple> axis) {
 
 		// Le o arraylist com label e info e pega só o label para as contas.
 		ArrayList<Double> yAxis = new ArrayList<Double>();
 		for (int i = 0; i < axis.size(); i++) {
-			yAxis.add(axis.get(i).getAvg());
+			yAxis.add(axis.get(i).average);
 		}
 
 		// double xAxisAvg = average(xAxis);
