@@ -112,7 +112,10 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 			System.err.println(e.getMessage());
 		}
 		if (validData) {
+			System.out.println("information " + information);
 			context.write(new Text(group), new DoubleWritable(information));
+		} else {
+			System.out.println("data invalida " + dateString + " " + information);
 		}
 
 	}

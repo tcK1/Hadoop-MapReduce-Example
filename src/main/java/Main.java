@@ -150,7 +150,7 @@ public class Main {
 				double[] data = mmq.mmq(tuples);
 				new LineChart(tuples, data, informationType);
 			} else {
-				System.out.println("fim");
+				System.out.println("fim com exit");
 				System.exit(1);
 			}
 		} catch (IOException e) {
@@ -159,7 +159,7 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		System.out.println("fim");
+		System.out.println("fim do final");
 
 	}
 
