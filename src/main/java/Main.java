@@ -48,64 +48,54 @@ public class Main {
 		sc.close();
 
 		// Seta os valores a serem usados durante o MapReduce
-		Configuration conf = new Configuration();
-		conf.set("startDate", args[0]);
-		conf.set("endDate", args[1]);
-		conf.set("selectionType", selectionType);
-		conf.set("informationType", informationType);
+		Configuration conf = createConf(args[0], args[1], selectionType, informationType);
 
+		FileSystem hdfs = null;
 		try {
-			// Cria o job a ser executado
-			Job job = Job.getInstance(conf, "dataweather");
-			job.setJarByClass(Main.class);
+			hdfs = FileSystem.get(conf);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 
-			job.setMapperClass(WeatherMapper.class);
-			// job.setCombinerClass(StatisticReducer.class);
+		Job job = createJob(conf);
 
-			job.setReducerClass(StatisticReducer.class);
+		String firstYear = (args[0].split("/"))[2];
+		int firstYearI = Integer.parseInt(firstYear);
+		String lastYear = (args[1].split("/"))[2];
+		int lastYearI = Integer.parseInt(lastYear);
 
-			job.setOutputKeyClass(Text.class);
-			job.setOutputValueClass(IntWritable.class);
-
-			job.setMapOutputKeyClass(Text.class);
-			job.setMapOutputValueClass(DoubleWritable.class);
-			job.setOutputKeyClass(Text.class);
-			job.setOutputValueClass(Text.class);
-
-			// Cria uma instancia do sistema de arquivos para podemos consultar
-			// os arquivos
-			FileSystem hdfs = FileSystem.get(conf);
-
-			String firstYear = (args[0].split("/"))[2];
-			int firstYearI = Integer.parseInt(firstYear);
-			String lastYear = (args[1].split("/"))[2];
-			int lastYearI = Integer.parseInt(lastYear);
-
-			// Itera todos os anos (da data inicial a final), inserindo no
-			// caminho de
-			// arquivos de cada ano
-			String path;
-			while (firstYearI <= lastYearI) {
-				path = args[2] + "/" + firstYearI;
+		// Itera todos os anos (da data inicial a final), inserindo no
+		// caminho de
+		// arquivos de cada ano
+		String path;
+		while (firstYearI <= lastYearI) {
+			path = args[2] + "/" + firstYearI;
+			try {
 				if (hdfs.exists(new Path(path)))
 					FileInputFormat.addInputPath(job, new Path(path));
-				firstYearI++;
+
+				// Usando output como /user/<usuario>/output
+				Path output = new Path("output");
+				// Usando output como argumento
+				/* Path output = new Path(args[3]); */
+
+				FileOutputFormat.setOutputPath(job, output);
+
+				System.out.println("Deletando a pasta output se ela ja existir");
+				// Checa se a pasta de output ja existe, e se existir deleta
+				// a mesma
+				if (hdfs.exists(output)) {
+					hdfs.delete(output, true);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+			firstYearI++;
+		}
 
-			// Usando output como /user/<usuario>/output
-			Path output = new Path("output");
-			// Usando output como argumento
-			/* Path output = new Path(args[3]); */
+		System.out.println("Input/Output foi");
 
-			FileOutputFormat.setOutputPath(job, output);
-
-			System.out.println("Deletando a pasta output se ela ja existir");
-			// Checa se a pasta de output ja existe, e se existir deleta a mesma
-			if (hdfs.exists(output))
-				hdfs.delete(output, true);
-
-			System.out.println("Input/Output foi");
-
+		try {
 			if (job.waitForCompletion(true)) {
 
 				LeastSquares mmq = new LeastSquares();
@@ -117,17 +107,51 @@ public class Main {
 				System.exit(1);
 			}
 		} catch (IOException e) {
-			System.out.println("Não foi possível criar o job");
-			System.err.println(e);
-		} catch (ClassNotFoundException e) {
-			System.out.println(e);
 			e.printStackTrace();
-		} catch (InterruptedException e) {
-			System.out.println(e);
+		} catch (ClassNotFoundException | InterruptedException e) {
 			e.printStackTrace();
 		}
+
 		System.out.println("fim");
 
+	}
+
+	private static Job createJob(Configuration conf) {
+		Job job = null;
+		try {
+			// Cria o job a ser executado
+			job = Job.getInstance(conf, "dataweather");
+
+			// Cria uma instancia do sistema de arquivos para podemos consultar
+			// os arquivos
+
+		} catch (IOException e) {
+			System.out.println("Não foi possível criar o job");
+			System.err.println(e);
+			e.printStackTrace();
+		}
+
+		job.setJarByClass(Main.class);
+		job.setMapperClass(WeatherMapper.class);
+		job.setReducerClass(StatisticReducer.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(IntWritable.class);
+		job.setMapOutputKeyClass(Text.class);
+		job.setMapOutputValueClass(DoubleWritable.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(Text.class);
+
+		return job;
+	}
+
+	private static Configuration createConf(String startDate, String endDate, String selectionType,
+			String informationType) {
+		Configuration conf = new Configuration();
+		conf.set("startDate", startDate);
+		conf.set("endDate", endDate);
+		conf.set("selectionType", selectionType);
+		conf.set("informationType", informationType);
+		return conf;
 	}
 
 	public static ArrayList<Tuple> getAverageList(FileSystem hdfs) throws IOException {
@@ -160,7 +184,8 @@ public class Main {
 			System.out.println(splitLine[1]);
 			dev = Double.valueOf(values[1]);
 
-			list.add(new Tuple(aux, avg, dev));
+			list.add(new Tuple(avg, dev));
+			// esse aux é só pra imprimir. quando tirar o print, tirar o aux
 			System.out.println("tupla adicionada: " + aux + " " + avg + " " + dev);
 			line = reader.readLine();
 			aux++;
