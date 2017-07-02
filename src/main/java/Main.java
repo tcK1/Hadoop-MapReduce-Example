@@ -11,7 +11,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.DoubleWritable;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -115,7 +114,8 @@ public class Main {
 		int lastYear = Integer.parseInt((endDate.split("/"))[2]);
 
 		try {
-			Path output = new Path("output"); // output := /user/<username>/output
+			Path output = new Path("output"); // output :=
+												// /user/<username>/output
 			FileOutputFormat.setOutputPath(job, output);
 			if (hdfs.exists(output)) {
 				System.out.println("Pasta 'output' existe, mas será apagada.");
@@ -210,11 +210,9 @@ public class Main {
 		job.setMapperClass(WeatherMapper.class);
 		job.setReducerClass(StatisticReducer.class);
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(IntWritable.class);
+		job.setOutputValueClass(DoubleWritable.class);
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(DoubleWritable.class);
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(Text.class);
 
 		return job;
 	}
