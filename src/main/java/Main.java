@@ -83,7 +83,7 @@ public class Main {
 				SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 				proceedInput = dateFormatter.parse(startDate).before(dateFormatter.parse(endDate));
 				if (!proceedInput) {
-					System.out.println("Data de fim é menor que data de fim.\n");
+					System.out.println("Data de fim é menor que data de início.\n");
 				}
 			} catch (ParseException e) {
 				proceedInput = false;
