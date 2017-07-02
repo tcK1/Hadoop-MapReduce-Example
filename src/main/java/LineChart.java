@@ -56,24 +56,6 @@ public class LineChart {
 		XYSeries mmqSerie = new XYSeries("Mínimo quadrado");
 
 		for (int i = 0; i < tuple.size(); i++) {
-
-			// String[] bDate = date.split("/");
-			// int length = bDate.length;
-			//
-			// switch (length) {
-			// case 1:
-			// date = bDate[0];
-			// break;
-			// case 2:
-			// date = bDate[1] + bDate[0];
-			// break;
-			// case 3:
-			// date = bDate[2] + bDate[1] + bDate[0];
-			// break;
-			// }
-
-			// double comparableDate = Double.parseDouble(date);
-
 			double value = this.mmq[0] + (this.mmq[1] * i + 1);
 			Tuple t = tuple.get(i);
 
