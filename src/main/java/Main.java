@@ -134,7 +134,7 @@ public class Main {
 			if (job.waitForCompletion(true)) {
 				ArrayList<Tuple> tuples = getTupleList(hdfs);
 				double[] data = LeastSquares.calculate(tuples);
-				new LineChart(tuples, data, informationType);
+				new LineChart(tuples, data, informationType, startDate, endDate);
 			} else {
 				System.out.println("fim com exit");
 				System.exit(1);

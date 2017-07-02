@@ -21,16 +21,16 @@ public class LineChart {
 		this.tuple = tuple;
 		this.mmq = mmq;
 
-		JFreeChart chart = createChartPanel(information);
+		JFreeChart chart = createChartPanel(information, String startDate, String endDate);
 
 		ChartUtilities.saveChartAsJPEG(new java.io.File("lineChart.jpg"), chart, 700, 600);
 
 	}
 
-	private JFreeChart createChartPanel(String information) {
+	private JFreeChart createChartPanel(String information, String startDate, String endDate) {
 		// creates a line chart object
 		// returns the chart panel
-		String chartTitle = "Grafico LINDÃO";
+		String chartTitle = startDate + " até " + endDate;
 		String xAxisLabel = "Data";
 		String yAxisLabel = information;
 
