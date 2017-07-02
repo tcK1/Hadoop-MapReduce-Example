@@ -114,37 +114,24 @@ public class Main {
 		int firstYear = Integer.parseInt((startDate.split("/"))[2]);
 		int lastYear = Integer.parseInt((endDate.split("/"))[2]);
 
-		String path;
-		while (firstYear <= lastYear) {
-			path = args[0] + "/" + firstYear;
-			try {
-				if (hdfs.exists(new Path(path)))
-					FileInputFormat.addInputPath(job, new Path(path));
-
-				// Usando output como /user/<usuario>/output
-				Path output = new Path("output");
-				// Usando output como argumento
-				/* Path output = new Path(args[3]); */
-
-				FileOutputFormat.setOutputPath(job, output);
-
-				System.out.println("Deletando a pasta output se ela ja existir");
-				// Checa se a pasta de output ja existe, e se existir deleta
-				// a mesma
-				if (hdfs.exists(output)) {
-					hdfs.delete(output, true);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+		try {
+			Path output = new Path("output"); // output := /user/<username>/output
+			FileOutputFormat.setOutputPath(job, output);
+			if (hdfs.exists(output)) {
+				System.out.println("Pasta 'output' existe, mas será apagada.");
+				hdfs.delete(output, true);
 			}
-			firstYear++;
+			for (int year = firstYear; year <= lastYear; year++) {
+				Path path = new Path(args[0] + "/" + year);
+				if (hdfs.exists(path))
+					FileInputFormat.addInputPath(job, path);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
-		System.out.println("Input/Output foi");
 
 		try {
 			if (job.waitForCompletion(true)) {
-
 				LeastSquares mmq = new LeastSquares();
 				ArrayList<Tuple> tuples = getAverageList(hdfs);
 				double[] data = mmq.mmq(tuples);
