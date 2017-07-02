@@ -15,7 +15,7 @@ public class LeastSquares {
 		// Le o arraylist com label e info e pega só o label para as contas.
 		ArrayList<Double> yAxis = new ArrayList<Double>();
 		for (int i = 0; i < axis.size(); i++) {
-			yAxis.add(axis.get(i).avg);
+			yAxis.add(axis.get(i).getAvg());
 		}
 
 		// double xAxisAvg = average(xAxis);

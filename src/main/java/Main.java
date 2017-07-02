@@ -111,7 +111,7 @@ public class Main {
 				LeastSquares mmq = new LeastSquares();
 				ArrayList<Tuple> tuples = getAverageList(hdfs);
 				double[] data = mmq.mmq(tuples);
-				new LineChart(tuples, data);
+				new LineChart(tuples, data, informationType);
 			} else {
 				System.out.println("fim");
 				System.exit(1);
@@ -136,7 +136,6 @@ public class Main {
 		ArrayList<Tuple> list = new ArrayList<Tuple>();
 		String line = reader.readLine();
 
-		String date;
 		double avg;
 		double dev;
 		int aux = 1;
@@ -151,7 +150,7 @@ public class Main {
 			String[] values = splitLine[1].split("	");
 
 			System.out.println(splitLine[1]);
-			date = values[0];
+			// String date = values[0];
 			avg = Double.valueOf(values[1]);
 
 			line = reader.readLine();

@@ -17,22 +17,22 @@ public class LineChart {
 
 	double[] mmq;
 
-	public LineChart(ArrayList<Tuple> tuple, double[] mmq) throws IOException {
+	public LineChart(ArrayList<Tuple> tuple, double[] mmq, String information) throws IOException {
 		this.tuple = tuple;
 		this.mmq = mmq;
 
-		JFreeChart chart = createChartPanel();
+		JFreeChart chart = createChartPanel(information);
 
 		ChartUtilities.saveChartAsJPEG(new java.io.File("lineChart.jpg"), chart, 700, 600);
 
 	}
 
-	private JFreeChart createChartPanel() {
+	private JFreeChart createChartPanel(String information) {
 		// creates a line chart object
 		// returns the chart panel
 		String chartTitle = "Grafico LINDÃO";
 		String xAxisLabel = "Data";
-		String yAxisLabel = "Temperaturaaaa";
+		String yAxisLabel = information;
 
 		XYDataset dataset = createDataset();
 		System.setProperty("java.awt.headless", "true");
@@ -56,7 +56,7 @@ public class LineChart {
 		XYSeries mmqSerie = new XYSeries("Mínimo quadrado");
 
 		for (int i = 0; i < tuple.size(); i++) {
-			int date = tuple.get(i).date;
+			int date = tuple.get(i).getDate();
 			// String[] bDate = date.split("/");
 			// int length = bDate.length;
 			//
@@ -77,9 +77,9 @@ public class LineChart {
 			double value = this.mmq[0] + (this.mmq[1] * date);
 			Tuple t = tuple.get(i);
 
-			avgSerie.add(date, t.avg);
-			avgMoreSerie.add(date, t.avg + t.dev);
-			avgLessSerie.add(date, t.avg - t.dev);
+			avgSerie.add(date, t.getAvg());
+			avgMoreSerie.add(date, t.getAvg() + t.getDev());
+			avgLessSerie.add(date, t.getAvg() - t.getDev());
 
 			System.out.println("valores mmq: " + date + ", " + value);
 
