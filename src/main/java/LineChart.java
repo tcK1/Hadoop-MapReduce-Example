@@ -50,9 +50,9 @@ public class LineChart {
 
 	private XYDataset createDataset() {
 		XYSeriesCollection dataset = new XYSeriesCollection();
-		XYSeries avgMoreSerie = new XYSeries("AvgMore");
+		XYSeries avgMoreSerie = new XYSeries("Média + desvio padrão");
 		XYSeries avgSerie = new XYSeries("Média");
-		XYSeries avgLessSerie = new XYSeries("AvgLess");
+		XYSeries avgLessSerie = new XYSeries("Média - desvio padrão");
 		XYSeries mmqSerie = new XYSeries("Mínimo quadrado");
 
 		for (int i = 0; i < tuple.size(); i++) {

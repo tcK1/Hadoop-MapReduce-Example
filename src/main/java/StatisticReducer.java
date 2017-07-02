@@ -32,7 +32,6 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 	protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)
 			throws IOException, InterruptedException {
 		System.out.println("Comecou o reducer");
-		// Configuration conf = context.getConfiguration();
 
 		List<Double> allValues = new ArrayList<Double>();
 

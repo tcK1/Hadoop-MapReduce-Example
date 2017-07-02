@@ -37,6 +37,7 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 	@Override
 	protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, DoubleWritable>.Context context)
 			throws IOException, InterruptedException {
+		System.out.println("entrou mapper");
 
 		String line = value.toString();
 		if (line.startsWith("STN")) // Header line
