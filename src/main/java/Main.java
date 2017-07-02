@@ -34,6 +34,7 @@ public class Main {
 			System.out.println("\tM\tMês");
 			System.out.println("\tA\tAno");
 			System.out.println("\tMA\tMês do ano"); // Jan, Fev...
+			System.out.println("\tT\tTudo");
 			groupingType = scanner.nextLine().toUpperCase();
 			proceedInput = isGroupingType(groupingType);
 			if (!proceedInput)
