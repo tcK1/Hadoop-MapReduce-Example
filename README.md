@@ -169,11 +169,12 @@ Para encerrar usamos:
   
 # Executando o código criado
 
-Os agumentos são Data de inicio, data de fim e o local do input
+Os agumentos são Data de inicio, data de fim e o local do input (pasta pai de todos os arquivos dos anos).
+Toda vez será deletado e criado um nova nova pasta para o output
 
 Ex:
 ```
-bin/hadoop jar DataWeather.jar 01/01/1920 06/06/1930 /user/root/input/1930
+bin/hadoop jar DataWeather.jar 01/01/1920 06/06/1930 /user/root/input
 ```
 
 ___
