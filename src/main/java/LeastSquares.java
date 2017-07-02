@@ -27,11 +27,11 @@ public class LeastSquares {
 
 		for (int i = 0; i < yAxis.size(); i++) {
 
-			// System.out.println("xAxis: " + xAxis.get(i));
-			// System.out.println("yAxis: " + yAxis.get(i));
-			// System.out.println("yAxisAvg: " + yAxisAvg);
-			topPart += i * (yAxis.get(i) - yAxisAvg);
-			bottomPart += i * (i - xAxisAvg);
+			System.out.println("xAxis: " + i + 1);
+			System.out.println("yAxis: " + yAxis.get(i));
+			System.out.println("yAxisAvg: " + yAxisAvg);
+			topPart += (i + 1) * (yAxis.get(i) - yAxisAvg);
+			bottomPart += (i + 1) * ((i + 1) - xAxisAvg);
 
 		}
 		System.out.println("topPart: " + topPart);

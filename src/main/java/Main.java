@@ -139,7 +139,7 @@ public class Main {
 		String date;
 		double avg;
 		double dev;
-
+		int aux = 1;
 		while (line != null) {
 			String[] splitLine = line.split(" ");
 
@@ -161,9 +161,10 @@ public class Main {
 			System.out.println(splitLine[1]);
 			dev = Double.valueOf(values[1]);
 
-			list.add(new Tuple(date, avg, dev));
-			System.out.println("tupla adicionada: " + date + " " + avg + " " + dev);
+			list.add(new Tuple(aux, avg, dev));
+			System.out.println("tupla adicionada: " + aux + " " + avg + " " + dev);
 			line = reader.readLine();
+			aux++;
 		}
 
 		return list;

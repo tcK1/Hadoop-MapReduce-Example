@@ -30,7 +30,7 @@ public class LineChart {
 	private JFreeChart createChartPanel() {
 		// creates a line chart object
 		// returns the chart panel
-		String chartTitle = "Grafico lindão";
+		String chartTitle = "Grafico LINDÃO";
 		String xAxisLabel = "Data";
 		String yAxisLabel = "Temperaturaaaa";
 
@@ -56,34 +56,34 @@ public class LineChart {
 		XYSeries mmqSerie = new XYSeries("Mínimo quadrado");
 
 		for (int i = 0; i < tuple.size(); i++) {
-			String date = tuple.get(i).date;
-			String[] bDate = date.split("/");
-			int length = bDate.length;
+			int date = tuple.get(i).date;
+			// String[] bDate = date.split("/");
+			// int length = bDate.length;
+			//
+			// switch (length) {
+			// case 1:
+			// date = bDate[0];
+			// break;
+			// case 2:
+			// date = bDate[1] + bDate[0];
+			// break;
+			// case 3:
+			// date = bDate[2] + bDate[1] + bDate[0];
+			// break;
+			// }
 
-			switch (length) {
-			case 1:
-				date = bDate[0];
-				break;
-			case 2:
-				date = bDate[1] + bDate[0];
-				break;
-			case 3:
-				date = bDate[2] + bDate[1] + bDate[0];
-				break;
-			}
+			// double comparableDate = Double.parseDouble(date);
 
-			double comparableDate = Double.parseDouble(date);
-
-			double value = this.mmq[0] + (this.mmq[1] * comparableDate);
+			double value = this.mmq[0] + (this.mmq[1] * date);
 			Tuple t = tuple.get(i);
 
-			avgSerie.add(comparableDate, t.avg);
-			avgMoreSerie.add(comparableDate, t.avg + t.dev);
-			avgLessSerie.add(comparableDate, t.avg - t.dev);
+			avgSerie.add(date, t.avg);
+			avgMoreSerie.add(date, t.avg + t.dev);
+			avgLessSerie.add(date, t.avg - t.dev);
 
-			System.out.println("valores mmq: " + comparableDate + ", " + value);
+			System.out.println("valores mmq: " + date + ", " + value);
 
-			mmqSerie.add(comparableDate, value);
+			mmqSerie.add(date, value);
 		}
 
 		dataset.addSeries(avgLessSerie);
