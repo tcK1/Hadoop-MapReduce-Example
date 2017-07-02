@@ -10,33 +10,27 @@ public class LeastSquares {
 		return total / axis.size();
 	}
 
-	public static double[] mmq(ArrayList<Tuple> axis) {
+	public double[] mmq(ArrayList<Tuple> axis) {
 
 		// Le o arraylist com label e info e pega só o label para as contas.
-		ArrayList yAxis = new ArrayList();
+		ArrayList<Double> yAxis = new ArrayList<Double>();
 		for (int i = 0; i < axis.size(); i++) {
 			yAxis.add(axis.get(i).avg);
 		}
 
-		// Faz um arraylist de 0 até n onde n é a quantidade de datas
-		ArrayList xAxis = new ArrayList();
-		for (int i = 0; i < axis.size(); i++) {
-			xAxis.add(i);
-		}
-
 		// double xAxisAvg = average(xAxis);
-		double xAxisAvg = xAxis.size() / 2;
+		double xAxisAvg = yAxis.size() / 2;
 		double yAxisAvg = average(yAxis);
 
 		double topPart = 0;
 		double bottomPart = 0;
 
-		for (int i = 0; i < xAxis.size(); i++) {
+		for (int i = 0; i < yAxis.size(); i++) {
 
-			System.out.println("xAxis: " + xAxis.get(i));
-			System.out.println("yAxis: " + yAxis.get(i));
-			System.out.println("yAxisAvg: " + yAxisAvg);
-			topPart += i * ((double) yAxis.get(i) - yAxisAvg);
+			// System.out.println("xAxis: " + xAxis.get(i));
+			// System.out.println("yAxis: " + yAxis.get(i));
+			// System.out.println("yAxisAvg: " + yAxisAvg);
+			topPart += i * (yAxis.get(i) - yAxisAvg);
 			bottomPart += i * (i - xAxisAvg);
 
 		}

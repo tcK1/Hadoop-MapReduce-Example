@@ -107,13 +107,7 @@ public class Main {
 			System.out.println("Input/Output foi");
 
 			if (job.waitForCompletion(true)) {
-				ArrayList<Tuple> tuples = getAverageList(hdfs);
-				LeastSquares mmq = new LeastSquares();
-				double[] data = mmq.mmq(tuples);
 
-				LineChart chart = new LineChart(tuples, data);
-				System.out.println("acabou o job");
-				// System.exit(0);
 			} else {
 				System.out.println("fim");
 				System.exit(1);
@@ -130,19 +124,6 @@ public class Main {
 		}
 		System.out.println("fim");
 
-		// // CODIGO PARA TESTAR O GRAFICO
-		// List<Double> x = new ArrayList<>();
-		// List<Double> y = new ArrayList<>();
-		// for (int i = 0; i < 10; i++) {
-		// x.add((double) i);
-		// y.add((double) (i + 3));
-		// }
-		// try {
-		// LineChart chart = new LineChart(x, y);
-		// } catch (IOException e) {
-		// System.err.println("deu ruim pra criar a imagem");
-		// e.printStackTrace();
-		// }
 	}
 
 	public static ArrayList<Tuple> getAverageList(FileSystem hdfs) throws IOException {

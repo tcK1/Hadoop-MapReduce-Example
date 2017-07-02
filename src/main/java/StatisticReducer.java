@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -29,15 +28,10 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 		return Math.sqrt(aux / values.size());
 	}
 
-	private double leastSquares(List<Double> x, List<Double> y) {
-		return 0D;
-	}
-
 	@Override
 	protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)
 			throws IOException, InterruptedException {
 		System.out.println("Comecou o reducer");
-		Configuration conf = context.getConfiguration();
 
 		List<Double> allValues = new ArrayList<Double>();
 
@@ -59,9 +53,4 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 		mos.close();
 	}
 
-	@Override()
-	protected void setup(Reducer<Text, DoubleWritable, Text, DoubleWritable>.Context context)
-			throws java.io.IOException, java.lang.InterruptedException {
-		mos = new MultipleOutputs(context);
-	}
 }

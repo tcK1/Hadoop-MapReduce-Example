@@ -46,10 +46,10 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		String month = line.substring(18, 20);
 		String day = line.substring(20, 22);
 		String dateString = day + "/" + month + "/" + year;
-		
+
 		Configuration conf = context.getConfiguration();
-		
-		try {		
+
+		try {
 			Date date = dateFormatter.parse(dateString);
 			Date intervalStart = dateFormatter.parse(conf.get("startDate"));
 			Date intervalEnd = dateFormatter.parse(conf.get("endDate"));
@@ -108,8 +108,6 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		group = getSelectionType(conf.get("selectionType"), dateString);
 
 		if (validData) {
-			// System.out.println("indo para o reducer " + group + " " +
-			// information);
 			context.write(new Text(group), new DoubleWritable(information));
 		}
 
