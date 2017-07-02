@@ -2,6 +2,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -16,10 +18,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Main {
-
-	static String startDate;
-
-	static String endDate;
 
 	public static void main(String[] args) {
 
@@ -61,19 +59,49 @@ public class Main {
 				System.out.println("Seleção inválida. Repita a operação.\n");
 		} while (!proceedInput);
 
+		String startDate;
+		String endDate;
+		do {
+			do {
+				System.out.println("Data de início do intervalo analisado (dd/MM/yyyy):");
+				startDate = scanner.nextLine();
+				proceedInput = validDate(startDate);
+				if (!proceedInput)
+					System.out.println("Data inválida.\n");
+			} while (!proceedInput);
+
+			do {
+				System.out.println("Data de fim do intervalo analisado (dd/MM/yyyy):");
+				endDate = scanner.nextLine();
+				proceedInput = validDate(endDate);
+				if (!proceedInput)
+					System.out.println("Data inválida.\n");
+			} while (!proceedInput);
+
+			try {
+				SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+				proceedInput = dateFormatter.parse(startDate).before(dateFormatter.parse(endDate));
+				if (!proceedInput) {
+					System.out.println("Data de fim é menor que data de fim.\n");
+				}
+			} catch (ParseException e) {
+				proceedInput = false;
+			}
+		} while (!proceedInput);
+
 		scanner.close();
 
 		// Seta os valores a serem usados durante o MapReduce
-		Configuration conf = createConf(args[0], args[1], groupingType, informationType);
+		Configuration config = createConfig(startDate, endDate, groupingType, informationType);
 
 		FileSystem hdfs = null;
 		try {
-			hdfs = FileSystem.get(conf);
+			hdfs = FileSystem.get(config);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 
-		Job job = createJob(conf);
+		Job job = createJob(config);
 
 		String firstYear = (args[0].split("/"))[2];
 		int firstYearI = Integer.parseInt(firstYear);
@@ -130,6 +158,16 @@ public class Main {
 
 		System.out.println("fim");
 
+	}
+
+	private static boolean validDate(String date) {
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+		try {
+			dateFormatter.parse(date);
+			return true;
+		} catch (ParseException e) {
+			return false;
+		}
 	}
 
 	private static boolean isGroupingType(String selectionType) {
@@ -191,7 +229,7 @@ public class Main {
 		return job;
 	}
 
-	private static Configuration createConf(String startDate, String endDate, String selectionType,
+	private static Configuration createConfig(String startDate, String endDate, String selectionType,
 			String informationType) {
 		Configuration conf = new Configuration();
 		conf.set("startDate", startDate);
