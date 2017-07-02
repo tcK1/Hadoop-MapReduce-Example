@@ -4,45 +4,33 @@ public class LeastSquares {
 
 	public static double average(ArrayList<Double> axis) {
 		double total = 0;
-		for (int i = 0; i < axis.size(); i++) {
-			total += (axis.get(i));
-		}
+		for (double value : axis)
+			total += value;
 		return total / axis.size();
 	}
 
 	public static double[] calculate(ArrayList<Tuple> axis) {
 
-		// Le o arraylist com label e info e pega só o label para as contas.
 		ArrayList<Double> yAxis = new ArrayList<Double>();
-		for (int i = 0; i < axis.size(); i++) {
-			yAxis.add(axis.get(i).average);
-		}
+		for (Tuple tuple : axis)
+			yAxis.add(tuple.average);
 
 		// double xAxisAvg = average(xAxis);
-		double xAxisAvg = yAxis.size() / 2;
-		double yAxisAvg = average(yAxis);
+		double xAvg = yAxis.size() / 2;
+		double yAvg = average(yAxis);
 
 		double topPart = 0;
 		double bottomPart = 0;
 
 		for (int i = 0; i < yAxis.size(); i++) {
-
-			System.out.println("xAxis: " + i + 1);
-			System.out.println("yAxis: " + yAxis.get(i));
-			System.out.println("yAxisAvg: " + yAxisAvg);
-			topPart += (i + 1) * (yAxis.get(i) - yAxisAvg);
-			bottomPart += (i + 1) * ((i + 1) - xAxisAvg);
-
+			topPart += (i + 1) * (yAxis.get(i) - yAvg);
+			bottomPart += (i + 1) * ((i + 1) - xAvg);
 		}
-		System.out.println("topPart: " + topPart);
-		System.out.println("bottomPart: " + bottomPart);
 
 		double b = (topPart / bottomPart);
-		double a = yAxisAvg - (b * xAxisAvg);
+		double a = yAvg - (b * xAvg);
 
 		double[] end = { a, b };
-		System.out.println("a: " + a);
-		System.out.println("b: " + b);
 		return end;
 	}
 }
