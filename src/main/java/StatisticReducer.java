@@ -21,31 +21,25 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, TupleW
 	}
 
 	private double standardDeviation(List<Double> values, double average) {
-		double aux = 0;
-		for (double value : values) {
-			aux = aux + Math.pow(value - average, 2.0);
-		}
-		return Math.sqrt(aux / values.size());
+		double sum = 0;
+		for (double value : values)
+			sum += Math.pow(value - average, 2.0);
+		return Math.sqrt(sum / values.size());
 	}
 
 	@Override
 	protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)
 			throws IOException, InterruptedException {
-		System.out.println("Comecou o reducer");
 
 		List<Double> allValues = new ArrayList<Double>();
 
-		for (DoubleWritable value : values) {
+		for (DoubleWritable value : values)
 			allValues.add(value.get());
-		}
 
 		double average = average(allValues);
 		double standardDeviation = standardDeviation(allValues, average);
 
-		// context.write(new Text("avg " + key), new DoubleWritable(average));
-		// context.write(new Text("dev " + key), new DoubleWritable(standardDeviation));
 		context.write(new Text(key), new TupleWritable(new Tuple(average, standardDeviation)));
-
 	}
 
 	@Override
