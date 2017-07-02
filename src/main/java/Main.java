@@ -92,8 +92,15 @@ public class Main {
 
 		scanner.close();
 
-		// Seta os valores a serem usados durante o MapReduce
-		Configuration config = createConfig(startDate, endDate, groupingType, informationType);
+		/*** Setting job configurations ***/
+
+		Configuration config = new Configuration();
+		config.set("startDate", startDate);
+		config.set("endDate", endDate);
+		config.set("groupingType", groupingType);
+		config.set("informationType", informationType);
+
+		/*** Job creation ***/
 
 		FileSystem hdfs = null;
 		try {
@@ -104,17 +111,12 @@ public class Main {
 
 		Job job = createJob(config);
 
-		String firstYear = (args[0].split("/"))[2];
-		int firstYearI = Integer.parseInt(firstYear);
-		String lastYear = (args[1].split("/"))[2];
-		int lastYearI = Integer.parseInt(lastYear);
+		int firstYear = Integer.parseInt((startDate.split("/"))[2]);
+		int lastYear = Integer.parseInt((endDate.split("/"))[2]);
 
-		// Itera todos os anos (da data inicial a final), inserindo no
-		// caminho de
-		// arquivos de cada ano
 		String path;
-		while (firstYearI <= lastYearI) {
-			path = args[2] + "/" + firstYearI;
+		while (firstYear <= lastYear) {
+			path = args[0] + "/" + firstYear;
 			try {
 				if (hdfs.exists(new Path(path)))
 					FileInputFormat.addInputPath(job, new Path(path));
@@ -135,7 +137,7 @@ public class Main {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			firstYearI++;
+			firstYear++;
 		}
 
 		System.out.println("Input/Output foi");
@@ -228,16 +230,6 @@ public class Main {
 		job.setOutputValueClass(Text.class);
 
 		return job;
-	}
-
-	private static Configuration createConfig(String startDate, String endDate, String selectionType,
-			String informationType) {
-		Configuration conf = new Configuration();
-		conf.set("startDate", startDate);
-		conf.set("endDate", endDate);
-		conf.set("groupingType", selectionType);
-		conf.set("informationType", informationType);
-		return conf;
 	}
 
 	public static ArrayList<Tuple> getAverageList(FileSystem hdfs) throws IOException {
