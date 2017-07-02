@@ -39,7 +39,7 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, TupleW
 		double average = average(allValues);
 		double standardDeviation = standardDeviation(allValues, average);
 
-		context.write(new Text(key), new TupleWritable(new Tuple(average, standardDeviation)));
+		context.write(new Text(key), new TupleWritable(average, standardDeviation));
 	}
 
 	@Override

@@ -6,31 +6,26 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 public class LineChart {
 
-	ArrayList<Tuple> tuple;
+	ArrayList<Tuple> tuples;
 
-	double[] mmq;
+	double[] leastSquares;
 
-	public LineChart(ArrayList<Tuple> tuple, double[] mmq, String information, String startDate, String endDate)
-			throws IOException {
-		this.tuple = tuple;
-		this.mmq = mmq;
+	public LineChart(ArrayList<Tuple> tuples, double[] leastSquares, String information, String startDate,
+			String endDate) throws IOException {
+		this.tuples = tuples;
+		this.leastSquares = leastSquares;
 
 		JFreeChart chart = createChartPanel(information, startDate, endDate);
-
 		ChartUtilities.saveChartAsJPEG(new java.io.File("lineChart.jpg"), chart, 700, 600);
-
 	}
 
 	private JFreeChart createChartPanel(String information, String startDate, String endDate) {
-		// creates a line chart object
-		// returns the chart panel
 		String chartTitle = startDate + " até " + endDate;
 		String xAxisLabel = "Data";
 		String yAxisLabel = information;
@@ -40,40 +35,30 @@ public class LineChart {
 		JFreeChart chart = ChartFactory.createXYLineChart(chartTitle, xAxisLabel, yAxisLabel, dataset);
 
 		XYPlot plot = chart.getXYPlot();
-
-		plot.setBackgroundPaint(new Color(225, 225, 225));
-
-		XYItemRenderer xyir = plot.getRenderer();
-		xyir.setSeriesPaint(0, Color.RED);
-
+		plot.setBackgroundPaint(new Color(240, 240, 240));
 		return chart;
 	}
 
 	private XYDataset createDataset() {
-		XYSeriesCollection dataset = new XYSeriesCollection();
 		XYSeries avgMoreSerie = new XYSeries("Média + desvio padrão");
 		XYSeries avgSerie = new XYSeries("Média");
 		XYSeries avgLessSerie = new XYSeries("Média - desvio padrão");
-		XYSeries mmqSerie = new XYSeries("Mínimo quadrado");
+		XYSeries squaresSerie = new XYSeries("Mínimo quadrado");
 
-		for (int i = 0; i < tuple.size(); i++) {
-			double value = this.mmq[0] + (this.mmq[1] * i + 1);
-			Tuple t = tuple.get(i);
-
-			avgSerie.add(i + 1, t.average);
-			avgMoreSerie.add(i + 1, t.average + t.standardDeviation);
-			avgLessSerie.add(i + 1, t.average - t.standardDeviation);
-
-			System.out.println("valores mmq: " + i + ", " + value);
-
-			mmqSerie.add(i + 1, value);
+		for (int i = 0; i < tuples.size(); i++) {
+			double value = this.leastSquares[0] + (this.leastSquares[1] * i + 1);
+			Tuple tuple = tuples.get(i);
+			avgSerie.add(i + 1, tuple.average);
+			avgMoreSerie.add(i + 1, tuple.average + tuple.standardDeviation);
+			avgLessSerie.add(i + 1, tuple.average - tuple.standardDeviation);
+			squaresSerie.add(i + 1, value);
 		}
 
+		XYSeriesCollection dataset = new XYSeriesCollection();
 		dataset.addSeries(avgLessSerie);
 		dataset.addSeries(avgMoreSerie);
 		dataset.addSeries(avgSerie);
-		dataset.addSeries(mmqSerie);
-
+		dataset.addSeries(squaresSerie);
 		return dataset;
 	}
 
