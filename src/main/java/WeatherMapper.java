@@ -11,6 +11,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritable> {
 
+	// Two constants used to represent missing data:
 	static final double MISSING_4 = 9999.9;
 	static final double MISSING_3 = 999.9;
 
@@ -27,17 +28,14 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		case "MA":
 			return date.substring(3, 10);
 		case "T":
-			return date;
 		default:
-			throw new IllegalArgumentException("Invalid date format: '" + dateFormat + "'");
+			return date;
 		}
-
 	}
 
 	@Override
 	protected void map(LongWritable key, Text value, Mapper<LongWritable, Text, Text, DoubleWritable>.Context context)
 			throws IOException, InterruptedException {
-		System.out.println("entrou mapper");
 
 		String line = value.toString();
 		if (line.startsWith("STN")) // Header line
@@ -48,23 +46,22 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		String day = line.substring(20, 22);
 		String dateString = day + "/" + month + "/" + year;
 
-		Configuration conf = context.getConfiguration();
+		Configuration config = context.getConfiguration();
 
 		try {
 			Date date = dateFormatter.parse(dateString);
-			Date intervalStart = dateFormatter.parse(conf.get("startDate"));
-			Date intervalEnd = dateFormatter.parse(conf.get("endDate"));
+			Date intervalStart = dateFormatter.parse(config.get("startDate"));
+			Date intervalEnd = dateFormatter.parse(config.get("endDate"));
 			if (date.before(intervalStart) || date.after(intervalEnd)) {
 				return;
 			}
 		} catch (ParseException e) {
-			System.err.println("Invalid date format.");
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 
-		double information = 0;
+		double information = 0.0;
 		boolean validData = false;
-		switch (conf.get("informationType")) {
+		switch (config.get("informationType")) {
 		case "TEMP":
 			information = Double.parseDouble(line.substring(24, 30));
 			validData = information != MISSING_4;
@@ -107,15 +104,14 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 
 		String group = "";
 		try {
-			group = getSelectionType(conf.get("groupingType"), dateString);
+			group = getSelectionType(config.get("groupingType"), dateString);
 		} catch (IllegalArgumentException e) {
 			System.err.println(e.getMessage());
 		}
 		if (validData) {
-			System.out.println("information " + information);
 			context.write(new Text(group), new DoubleWritable(information));
 		} else {
-			System.out.println("data invalida " + dateString + " " + information);
+			System.err.println("Dados inválidos ou faltando.");
 		}
 
 	}

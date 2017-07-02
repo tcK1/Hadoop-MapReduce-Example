@@ -118,7 +118,7 @@ public class Main {
 			Path output = new Path("output"); // output := /user/<username>/output
 			FileOutputFormat.setOutputPath(job, output);
 			if (hdfs.exists(output)) {
-				System.out.println("Pasta 'output' existe, mas será apagada.");
+				System.err.println("Pasta 'output' existe, mas será apagada.");
 				hdfs.delete(output, true);
 			}
 			for (int year = firstYear; year <= lastYear; year++) {
@@ -127,7 +127,7 @@ public class Main {
 					FileInputFormat.addInputPath(job, path);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 
 		try {
@@ -135,14 +135,12 @@ public class Main {
 				ArrayList<Tuple> tuples = getTupleList(hdfs);
 				double[] data = LeastSquares.calculate(tuples);
 				new LineChart(tuples, data, informationType);
-			} else {
-				System.out.println("fim com exit");
+			} else
 				System.exit(1);
-			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		} catch (ClassNotFoundException | InterruptedException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
 
@@ -192,8 +190,8 @@ public class Main {
 		try {
 			job = Job.getInstance(conf, "dataweather");
 		} catch (IOException e) {
-			System.out.println("Não foi possível criar o job");
-			System.err.println(e);
+			System.err.println("Não foi possível criar o job.");
+			System.err.println(e.getMessage());
 			e.printStackTrace();
 		}
 
