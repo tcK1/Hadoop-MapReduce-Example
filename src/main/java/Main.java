@@ -108,6 +108,10 @@ public class Main {
 
 			if (job.waitForCompletion(true)) {
 
+				LeastSquares mmq = new LeastSquares();
+				ArrayList<Tuple> tuples = getAverageList(hdfs);
+				double[] data = mmq.mmq(tuples);
+				new LineChart(tuples, data);
 			} else {
 				System.out.println("fim");
 				System.exit(1);

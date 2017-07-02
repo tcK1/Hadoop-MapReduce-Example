@@ -32,6 +32,7 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 	protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)
 			throws IOException, InterruptedException {
 		System.out.println("Comecou o reducer");
+		// Configuration conf = context.getConfiguration();
 
 		List<Double> allValues = new ArrayList<Double>();
 
@@ -53,4 +54,9 @@ public class StatisticReducer extends Reducer<Text, DoubleWritable, Text, Double
 		mos.close();
 	}
 
+	@Override()
+	protected void setup(Reducer<Text, DoubleWritable, Text, DoubleWritable>.Context context)
+			throws java.io.IOException, java.lang.InterruptedException {
+		mos = new MultipleOutputs<Text, DoubleWritable>(context);
+	}
 }

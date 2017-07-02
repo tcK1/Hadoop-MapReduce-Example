@@ -105,8 +105,11 @@ public class WeatherMapper extends Mapper<LongWritable, Text, Text, DoubleWritab
 		}
 
 		String group = "";
-		group = getSelectionType(conf.get("selectionType"), dateString);
-
+		try {
+			group = getSelectionType(conf.get("selectionType"), dateString);
+		} catch (IllegalArgumentException e) {
+			System.err.println(e.getMessage());
+		}
 		if (validData) {
 			context.write(new Text(group), new DoubleWritable(information));
 		}
