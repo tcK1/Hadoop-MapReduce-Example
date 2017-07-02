@@ -146,8 +146,21 @@ public class Main {
 	}
 
 	private static boolean isInformationType(String informationType) {
-		// TODO Auto-generated method stub
-		return false;
+		switch (informationType) {
+		case "TEMP":
+		case "DEWP":
+		case "SLP":
+		case "STP":
+		case "VISIB":
+		case "WDSP":
+		case "MXSPD":
+		case "GUST":
+		case "MAX":
+		case "MIN":
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	private static Job createJob(Configuration conf) {
@@ -183,7 +196,7 @@ public class Main {
 		Configuration conf = new Configuration();
 		conf.set("startDate", startDate);
 		conf.set("endDate", endDate);
-		conf.set("selectionType", selectionType);
+		conf.set("groupingType", selectionType);
 		conf.set("informationType", informationType);
 		return conf;
 	}
