@@ -56,7 +56,7 @@ public class LineChart {
 		XYSeries mmqSerie = new XYSeries("Mínimo quadrado");
 
 		for (int i = 0; i < tuple.size(); i++) {
-			int date = tuple.get(i).getDate();
+
 			// String[] bDate = date.split("/");
 			// int length = bDate.length;
 			//
@@ -74,16 +74,16 @@ public class LineChart {
 
 			// double comparableDate = Double.parseDouble(date);
 
-			double value = this.mmq[0] + (this.mmq[1] * date);
+			double value = this.mmq[0] + (this.mmq[1] * i + 1);
 			Tuple t = tuple.get(i);
 
-			avgSerie.add(date, t.getAvg());
-			avgMoreSerie.add(date, t.getAvg() + t.getDev());
-			avgLessSerie.add(date, t.getAvg() - t.getDev());
+			avgSerie.add(i + 1, t.getAvg());
+			avgMoreSerie.add(i + 1, t.getAvg() + t.getDev());
+			avgLessSerie.add(i + 1, t.getAvg() - t.getDev());
 
-			System.out.println("valores mmq: " + date + ", " + value);
+			System.out.println("valores mmq: " + i + ", " + value);
 
-			mmqSerie.add(date, value);
+			mmqSerie.add(i + 1, value);
 		}
 
 		dataset.addSeries(avgLessSerie);
