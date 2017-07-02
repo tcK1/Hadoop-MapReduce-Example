@@ -35,7 +35,7 @@ public class LineChart {
 		JFreeChart chart = ChartFactory.createXYLineChart(chartTitle, xAxisLabel, yAxisLabel, dataset);
 
 		XYPlot plot = chart.getXYPlot();
-		plot.setBackgroundPaint(new Color(240, 240, 240));
+		plot.setBackgroundPaint(new Color(225, 225, 225));
 		return chart;
 	}
 
